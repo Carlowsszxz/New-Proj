@@ -1,0 +1,13 @@
+{
+  "name": "rfid-login-system",
+  "version": "1.0.0",
+  "description": "IoT RFID Login System with Noise Detection",
+  "scripts": {
+    "dev": "echo 'Use VSCode Live Server or similar'",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": ["iot", "rfid", "esp32", "supabase"],
+  "author": "",
+  "license": "MIT"
+}
+
