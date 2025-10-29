@@ -4,6 +4,54 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Helper function to check if user is admin and redirect accordingly
+async function redirectBasedOnRole(email) {
+    try {
+        // First, get the authenticated session to ensure we're using authenticated requests
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        // Check if user is admin - select all columns to avoid error if is_admin doesn't exist
+        // Using authenticated session if available
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('id, email, is_admin')
+            .eq('email', email)
+            .single();
+        
+        if (error) {
+            console.error('Error checking admin status:', error);
+            
+            // Check if it's a column error or RLS error
+            if (error.message) {
+                if (error.message.includes('column') && error.message.includes('is_admin')) {
+                    console.log('is_admin column not found - redirecting to dashboard (run setup_admin_accounts.sql first)');
+                } else if (error.message.includes('permission') || error.message.includes('policy')) {
+                    console.log('RLS policy error - check if users table allows SELECT operations');
+                    console.log('Try running the RLS policy SQL from setup_admin_accounts.sql');
+                }
+            }
+            
+            // Default to dashboard if error
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        // Redirect based on admin status
+        // Check if is_admin exists and is true
+        if (user && user.hasOwnProperty('is_admin') && user.is_admin === true) {
+            console.log('Admin user detected - redirecting to setup.html');
+            window.location.href = 'setup.html';
+        } else {
+            console.log('Regular user - redirecting to dashboard.html');
+            window.location.href = 'dashboard.html';
+        }
+    } catch (err) {
+        console.error('Error in redirectBasedOnRole:', err);
+        // Default to dashboard on error
+        window.location.href = 'dashboard.html';
+    }
+}
+
 // Check if user is already logged in
 document.addEventListener('DOMContentLoaded', async function() {
     // Check for Supabase Auth session
@@ -12,15 +60,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (session && session.user) {
         const email = session.user.email;
         sessionStorage.setItem('userEmail', email);
-        window.location.href = 'dashboard.html';
+        await redirectBasedOnRole(email);
         return;
     }
     
     // Check for session storage login
     const userEmail = sessionStorage.getItem('userEmail');
     if (userEmail) {
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        // Redirect based on role
+        await redirectBasedOnRole(userEmail);
     }
 });
 
@@ -63,8 +111,8 @@ document.getElementById('login').addEventListener('submit', async function(e) {
         // Save to session
         sessionStorage.setItem('userEmail', email);
         
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        // Redirect based on admin status
+        await redirectBasedOnRole(email);
     } catch (err) {
         document.getElementById('loginError').textContent = 'Error: ' + err.message;
     }

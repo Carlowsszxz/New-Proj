@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reports - RFID System</title>
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/reports.css">
+</head>
+<body>
+    <nav style="background:#333;color:white;padding:10px 20px;margin-bottom:20px;">
+        <ul style="list-style:none;padding:0;margin:0;display:flex;gap:20px;">
+            <li><a href="dashboard.html" style="color:white;text-decoration:none;">Dashboard</a></li>
+            <li><a href="map.html" style="color:white;text-decoration:none;">Seat Map</a></li>
+            <li><a href="reports.html" style="color:#ffd700;text-decoration:underline;">Reports</a></li>
+            <li style="margin-left:auto;"><button onclick="logout()" style="background:#dc3545;color:white;border:none;padding:5px 15px;border-radius:3px;cursor:pointer;">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1 style="text-align:center;">Submit a Report</h1>
+        
+        <div id="reportFormSection">
+            <h2>New Report</h2>
+            <form id="reportForm" onsubmit="event.preventDefault(); submitReport();">
+                <div>
+                    <label for="reportType">Report Type:</label>
+                    <select id="reportType" required>
+                        <option value="">Select a type...</option>
+                        <option value="issue">Issue</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="complaint">Complaint</option>
+                        <option value="suggestion">Suggestion</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="reportTitle">Title:</label>
+                    <input type="text" id="reportTitle" placeholder="Brief summary of your report" required>
+                </div>
+                
+                <div>
+                    <label for="reportDescription">Description:</label>
+                    <textarea id="reportDescription" rows="5" placeholder="Provide detailed information about your report..." required></textarea>
+                </div>
+                
+                <button type="submit">Submit Report</button>
+                <div id="reportError" style="color:red;margin-top:10px;"></div>
+                <div id="reportSuccess" style="color:green;margin-top:10px;"></div>
+            </form>
+        </div>
+
+        <div id="myReportsSection">
+            <h2>My Submitted Reports</h2>
+            <button id="refreshBtn" onclick="loadMyReports()">Refresh</button>
+            <div id="reportsList" class="activity-list">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>RFID Login System - Reports</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/reports.js"></script>
+
+</body>
+</html>
+

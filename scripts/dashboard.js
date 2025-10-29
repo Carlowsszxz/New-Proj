@@ -80,6 +80,7 @@ async function loadUserInfo(email) {
         if (rfidError) throw rfidError;
         
         const hasRfid = rfidCards && rfidCards.length > 0;
+        const rfidUid = hasRfid ? rfidCards[0].rfid_uid : '';
         
         // Show/hide RFID assignment form
         if (hasRfid) {
@@ -87,7 +88,6 @@ async function loadUserInfo(email) {
             document.getElementById('myStatus').style.display = 'block';
             document.getElementById('mySeat').style.display = 'block';
             document.getElementById('myNoise').style.display = 'block';
-            document.getElementById('statusText').textContent = 'RFID Card: ' + rfidCards[0].rfid_uid;
             
             // Check if currently logged in (has an active login event without logout)
             const { data: events, error: eventError } = await supabase
@@ -108,6 +108,9 @@ async function loadUserInfo(email) {
                 }
                 
                 if (lastEvent && lastEvent.event === 'login') {
+                    // Show logged in status with RFID
+                    document.getElementById('statusText').innerHTML = 'RFID Card: ' + rfidUid + ' - <span style="color:green">Logged In</span>';
+                    
                     // Check occupancy
                     const { data: occupancy, error: occError } = await supabase
             .from('occupancy')
@@ -131,12 +134,12 @@ async function loadUserInfo(email) {
                     // Show noise level ONLY when logged in
                     displayCurrentNoiseLevel();
                 } else {
-                    document.getElementById('statusText').textContent = 'Status: Logged Out';
+                    document.getElementById('statusText').innerHTML = 'RFID Card: ' + rfidUid + ' - <span style="color:red">Logged Out</span>';
                     document.getElementById('seatInfo').textContent = 'No active seat';
                     document.getElementById('noiseLevel').textContent = 'Not logged in';
                 }
             } else {
-                document.getElementById('statusText').textContent = 'Status: Not logged in';
+                document.getElementById('statusText').innerHTML = 'RFID Card: ' + rfidUid + ' - <span style="color:orange">Never logged in</span>';
                 document.getElementById('seatInfo').textContent = 'No active seat';
                 document.getElementById('noiseLevel').textContent = 'Not logged in';
             }
