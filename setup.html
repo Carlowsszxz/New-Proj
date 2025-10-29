@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFID System Setup</title>
+    <link rel="stylesheet" href="styles/setup.css">
+</head>
+<body>
+    <header>
+        <h1>RFID Login System Setup</h1>
+        <p>Add users and assign RFID cards</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Configuration</h2>
+            <p>Connected to Supabase</p>
+            <p id="connectionStatus">Connected! ✅</p>
+        </section>
+
+        <section>
+            <h2>Add New User</h2>
+            <form onsubmit="event.preventDefault(); addUser();">
+                <div>
+                    <label for="userEmail">Email:</label>
+                    <input type="email" id="userEmail" required>
+                </div>
+                <div>
+                    <label for="userFirstName">First Name:</label>
+                    <input type="text" id="userFirstName">
+                </div>
+                <div>
+                    <label for="userLastName">Last Name:</label>
+                    <input type="text" id="userLastName">
+                </div>
+                <button type="submit">Add User</button>
+            </form>
+            <p id="userResult"></p>
+        </section>
+
+        <section>
+            <h2>Get RFID Card UID</h2>
+            <p>Upload Arduino code to ESP32, tap your card, then copy the UID from Serial Monitor</p>
+            <input type="text" id="rfidUid" placeholder="RFID UID (e.g., 93B12CDA)" maxlength="20">
+        </section>
+
+        <section>
+            <h2>Assign RFID Card to User</h2>
+            <form onsubmit="event.preventDefault(); assignRfid();">
+                <div>
+                    <label for="userSelect">Select User:</label>
+                    <select id="userSelect" required>
+                        <option value="">Select User...</option>
+                    </select>
+                </div>
+                <button type="button" onclick="loadUsers()">Refresh Users</button>
+                <button type="submit">Assign RFID Card</button>
+            </form>
+            <p id="rfidResult"></p>
+        </section>
+
+        <section>
+            <h2>View All Users and RFID Cards</h2>
+            <button onclick="viewAll()">View All</button>
+            <div id="allData"></div>
+        </section>
+
+        <section>
+            <h2>Login/Logout Events</h2>
+            <button onclick="viewLogs()">View Recent Events</button>
+            <div id="logData"></div>
+        </section>
+
+        <section>
+            <h2>Seat Occupancy (Table-1)</h2>
+            <button onclick="viewOccupancy()">Refresh</button>
+            <div id="occupancyData"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>RFID Login System - Simple Setup Interface</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/setup.js"></script>
+
+</body>
+</html>

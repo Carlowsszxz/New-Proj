@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - RFID System</title>
+    <link rel="stylesheet" href="styles/login.css">
+</head>
+<body>
+    <header>
+        <h1>Student Dashboard</h1>
+    </header>
+
+    <main>
+        <div id="dashboard">
+            <h2>Welcome, <span id="userName"></span>!</h2>
+            
+            <div id="rfidAssignment" style="display:none;">
+                <h3>Assign Your RFID Card</h3>
+                <p><strong>Instructions:</strong></p>
+                <ol>
+                    <li>Tap your RFID card on the reader</li>
+                    <li>Write down the RFID ID that appears (this is case-sensitive)</li>
+                    <li>Enter the exact ID below (copy-paste recommended)</li>
+                    <li>Click "Assign RFID Card"</li>
+                </ol>
+                
+                <form id="assignRfidForm">
+                    <label for="rfidInput">RFID Card ID:</label>
+                    <input type="text" id="rfidInput" placeholder="Enter RFID ID (case-sensitive)" required>
+                    <button type="submit">Assign RFID Card</button>
+                </form>
+                
+                <div id="rfidError"></div>
+            </div>
+
+            <div id="myStatus">
+                <h3>Your Status</h3>
+                <p id="statusText">Loading...</p>
+            </div>
+
+            <div id="mySeat">
+                <h3>Your Seat</h3>
+                <p id="seatInfo">Loading...</p>
+            </div>
+
+            <div id="myNoise">
+                <h3>Current Noise Level</h3>
+                <p id="noiseLevel">Loading...</p>
+            </div>
+
+            <button onclick="logout()">Logout</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>RFID Login System - Student Dashboard</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/dashboard.js"></script>
+
+</body>
+</html>
+
