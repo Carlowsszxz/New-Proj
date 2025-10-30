@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFID Card Management - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/setup.css">
+</head>
+<body>
+    <nav style="background:#333;color:white;padding:10px 20px;margin-bottom:20px;">
+        <ul style="list-style:none;padding:0;margin:0;display:flex;gap:20px;">
+            <li><a href="setup.html" style="color:white;text-decoration:none;">Admin Dashboard</a></li>
+            <li><a href="user-management.html" style="color:white;text-decoration:none;">User Management</a></li>
+            <li><a href="rfid-management.html" style="color:#ffd700;text-decoration:underline;">RFID Management</a></li>
+            <li><a href="student-reports.html" style="color:white;text-decoration:none;">Student Reports</a></li>
+            <li><a href="activity-logs.html" style="color:white;text-decoration:none;">Activity Logs</a></li>
+            <li><a href="lcd-messages.html" style="color:white;text-decoration:none;">LCD Messages</a></li>
+            <li style="margin-left:auto;"><button onclick="logout()" style="background:#dc3545;color:white;border:none;padding:5px 15px;border-radius:3px;cursor:pointer;">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1 style="text-align:center;">RFID Card Management</h1>
+
+        <!-- RFID Management -->
+        <div class="admin-section">
+            <h2>Assign RFID Card</h2>
+            <div>
+                <label for="rfidUid">RFID UID:</label>
+                <input type="text" id="rfidUid" placeholder="Enter RFID UID (e.g., 93B12CDA)" maxlength="20">
+            </div>
+            <div>
+                <label for="userSearch">Assign to User:</label>
+                <div style="position:relative;margin-bottom:10px;">
+                    <div style="position:relative;">
+                        <input type="text" id="userSearch" placeholder="Search users by email or name..." style="width:100%;padding:10px;padding-right:40px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;" oninput="filterUsers()" onfocus="showUserDropdown()">
+                        <button onclick="clearUserSelection()" id="clearUserBtn" style="display:none;position:absolute;right:5px;top:50%;transform:translateY(-50%);background:#dc3545;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;font-size:18px;line-height:1;">×</button>
+                    </div>
+                    <div id="userDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #ddd;border-radius:4px;max-height:300px;overflow-y:auto;z-index:1000;box-shadow:0 4px 6px rgba(0,0,0,0.1);margin-top:5px;"></div>
+                </div>
+                <button onclick="loadUsers()">Refresh Users</button>
+                <input type="hidden" id="userSelect" value="">
+            </div>
+            <button onclick="assignRfid()">Assign RFID Card</button>
+            <p id="rfidResult"></p>
+            
+            <div style="margin-top: 20px;">
+                <h3>All RFID Cards</h3>
+                <button onclick="viewAllRfid()">Refresh List</button>
+                <div id="allRfidData"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>RFID Login System - RFID Card Management</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/rfid-management.js"></script>
+
+</body>
+</html>
+

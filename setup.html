@@ -5,65 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - RFID System</title>
     <link rel="stylesheet" href="styles/setup.css">
-    <style>
-        .admin-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #dee2e6;
-        }
-        .admin-section h2 {
-            margin-top: 0;
-            color: #333;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        button.danger {
-            background: #dc3545;
-            color: white;
-        }
-        button.success {
-            background: #28a745;
-            color: white;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .stat-box {
-            background: white;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
-        }
-        .stat-label {
-            color: #666;
-            font-size: 0.9em;
-        }
-    </style>
 </head>
 <body>
-    <nav style="background:#333;color:white;padding:10px 20px;margin-bottom:20px;">
-        <ul style="list-style:none;padding:0;margin:0;display:flex;gap:20px;">
-            <li><a href="setup.html" style="color:#ffd700;text-decoration:underline;">Admin Dashboard</a></li>
-            <li style="margin-left:auto;"><button onclick="logout()" style="background:#dc3545;color:white;border:none;padding:5px 15px;border-radius:3px;cursor:pointer;">Logout</button></li>
+    <nav class="admin-nav">
+        <ul>
+            <li><a href="setup.html" class="active">Admin Dashboard</a></li>
+            <li><a href="user-management.html">User Management</a></li>
+            <li><a href="rfid-management.html">RFID Management</a></li>
+            <li><a href="student-reports.html">Student Reports</a></li>
+            <li><a href="activity-logs.html">Activity Logs</a></li>
+            <li><a href="lcd-messages.html">LCD Messages</a></li>
+            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
         </ul>
     </nav>
 
     <main>
-        <h1 style="text-align:center;">Admin Dashboard</h1>
+        <h1 class="page-title">Admin Dashboard</h1>
 
         <!-- Statistics Overview -->
         <div class="admin-section">
@@ -89,89 +46,12 @@
             <button onclick="loadStats()">Refresh Stats</button>
         </div>
 
-        <!-- User Management -->
-        <div class="admin-section">
-            <h2>User Management</h2>
-            <div>
-                <h3>Add New User</h3>
-                <form onsubmit="event.preventDefault(); addUser();">
-                    <div>
-                        <label for="userEmail">Email:</label>
-                        <input type="email" id="userEmail" required>
-                    </div>
-                    <div>
-                        <label for="userFirstName">First Name:</label>
-                        <input type="text" id="userFirstName">
-                    </div>
-                    <div>
-                        <label for="userLastName">Last Name:</label>
-                        <input type="text" id="userLastName">
-                    </div>
-                    <div>
-                        <label for="userPassword">Password:</label>
-                        <input type="password" id="userPassword" required placeholder="User's password (they can change it later)">
-                        <small style="color:#666;">Confirmation email will be sent to the user</small>
-                    </div>
-                    <div>
-                        <label for="makeAdmin">
-                            <input type="checkbox" id="makeAdmin"> Make Admin
-                        </label>
-                    </div>
-                    <button type="submit">Add User & Send Confirmation Email</button>
-                </form>
-                <p id="userResult"></p>
-            </div>
-            <div style="margin-top: 20px;">
-                <h3>All Users</h3>
-                <button onclick="viewAllUsers()">Refresh</button>
-                <div id="allUsersData"></div>
-            </div>
-        </div>
-
-        <!-- RFID Management -->
-        <div class="admin-section">
-            <h2>RFID Card Management</h2>
-            <div>
-                <label for="rfidUid">RFID UID:</label>
-                <input type="text" id="rfidUid" placeholder="Enter RFID UID (e.g., 93B12CDA)" maxlength="20">
-            </div>
-            <div>
-                <label for="userSelect">Assign to User:</label>
-                <select id="userSelect">
-                    <option value="">Select User...</option>
-                </select>
-                <button onclick="loadUsers()">Refresh Users</button>
-            </div>
-            <button onclick="assignRfid()">Assign RFID Card</button>
-            <p id="rfidResult"></p>
-            
-            <div style="margin-top: 20px;">
-                <h3>All RFID Cards</h3>
-                <button onclick="viewAllRfid()">View All RFID Cards</button>
-                <div id="allRfidData"></div>
-            </div>
-        </div>
-
-        <!-- Student Reports -->
-        <div class="admin-section">
-            <h2>Student Reports</h2>
-            <button onclick="viewAllReports()">Refresh Reports</button>
-            <div id="reportsData">Loading reports...</div>
-        </div>
-
-        <!-- Activity Logs -->
-        <div class="admin-section">
-            <h2>Activity Logs (Login/Logout Events)</h2>
-            <button onclick="viewLogs()">View Recent Events</button>
-            <div id="logData"></div>
-        </div>
-
         <!-- Seat Occupancy -->
         <div class="admin-section">
             <h2>Seat Occupancy</h2>
-            <div style="margin-bottom:15px;">
+            <div class="filter-group">
                 <label for="occupancyTableSelect">Select Table:</label>
-                <select id="occupancyTableSelect" onchange="viewOccupancy()" style="padding:8px;margin-right:10px;border:1px solid #ddd;border-radius:4px;">
+                <select id="occupancyTableSelect" onchange="viewOccupancy()" class="table-select">
                     <option value="table-1">Table 1</option>
                     <option value="table-2" disabled>Table 2 (Future Expansion)</option>
                     <option value="table-3" disabled>Table 3 (Future Expansion)</option>
@@ -185,9 +65,9 @@
         <!-- Current Noise Level -->
         <div class="admin-section">
             <h2>Current Noise Level</h2>
-            <div style="margin-bottom:15px;">
+            <div class="filter-group">
                 <label for="noiseTableSelect">Select Table:</label>
-                <select id="noiseTableSelect" onchange="viewNoiseLevel()" style="padding:8px;margin-right:10px;border:1px solid #ddd;border-radius:4px;">
+                <select id="noiseTableSelect" onchange="viewNoiseLevel()" class="table-select">
                     <option value="table-1">Table 1</option>
                     <option value="table-2" disabled>Table 2 (Future Expansion)</option>
                     <option value="table-3" disabled>Table 3 (Future Expansion)</option>

@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     loadUsers();
     loadStats();
     viewOccupancy();
-    viewAllReports();
     viewNoiseLevel(); // Load initial noise level for Table 1
 });
 

@@ -20,7 +20,12 @@
     <main>
         <h1 style="text-align:center;">Seat Map - Table 1</h1>
         
-        <button id="refreshBtn" onclick="loadMap()">Refresh Map</button>
+        <div style="text-align:center;margin:20px 0;">
+            <button id="refreshBtn" onclick="loadMap()">Refresh Map</button>
+            <button onclick="showFullMap()" style="background:#17a2b8;color:white;border:none;padding:10px 30px;border-radius:5px;cursor:pointer;margin-left:10px;font-size:1em;">
+                🗺️ View Full Map
+            </button>
+        </div>
         
         <div class="seat-map" id="seatMap">
             <div class="seat">Seat 1</div>

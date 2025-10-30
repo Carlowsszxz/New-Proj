@@ -152,3 +152,114 @@ table tr:hover {
     color: white;
 }
 
+/* Admin section styles */
+.admin-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.admin-section h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+button.danger {
+    background: #dc3545;
+    color: white;
+}
+
+button.success {
+    background: #28a745;
+    color: white;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Navigation styles */
+.admin-nav {
+    background: #333;
+    color: white;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+.admin-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.admin-nav a {
+    color: white;
+    text-decoration: none;
+}
+
+.admin-nav a.active {
+    color: #ffd700;
+    text-decoration: underline;
+}
+
+.admin-nav .nav-spacer {
+    margin-left: auto;
+}
+
+.admin-nav button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Form styles */
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.table-select {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.page-title {
+    text-align: center;
+}
+

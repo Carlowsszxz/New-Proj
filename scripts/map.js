@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
     
-    // Verify user exists in database
+    // Verify user exists in database and check if admin
     const { data: existingUser } = await supabase
         .from('users')
-        .select('*')
+        .select('*, is_admin')
         .eq('email', userEmail)
         .single();
     
@@ -40,11 +40,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
     
-    // User exists, load map
+    // If admin, redirect to admin dashboard
+    if (existingUser.is_admin === true) {
+        window.location.href = 'setup.html';
+        return;
+    }
+    
+    // User exists and is not admin, load map
     loadMap();
     
     // Auto-refresh every 5 seconds
     setInterval(loadMap, 5000);
+    
+    // Prevent navigation away from student pages
+    setupNavigationGuard();
 });
 
 async function loadMap() {
@@ -89,7 +98,134 @@ async function loadMap() {
     }
 }
 
+function showFullMap() {
+    // Create full-screen modal for image
+    const modal = document.createElement('div');
+    modal.className = 'full-map-modal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:10000;display:flex;align-items:center;justify-content:center;overflow-y:auto;';
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = 'position:relative;max-width:95vw;max-height:95vh;display:flex;align-items:center;justify-content:center;';
+    
+    // Create close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-full-map-btn';
+    closeBtn.textContent = '×';
+    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;background:#dc3545;color:white;border:none;padding:15px 25px;border-radius:50%;cursor:pointer;font-size:32px;width:50px;height:50px;line-height:20px;z-index:10001;box-shadow:0 4px 10px rgba(0,0,0,0.3);';
+    
+    // Create PDF viewer element for floor plan
+    const pdfViewer = document.createElement('iframe');
+    pdfViewer.src = 'images/FloorPlan.pdf';
+    pdfViewer.style.cssText = 'width:90vw;height:90vh;border:none;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.5);background:white;';
+    pdfViewer.title = 'Floor Plan';
+    
+    // Fallback message if PDF can't load
+    const fallbackMsg = document.createElement('div');
+    fallbackMsg.style.cssText = 'padding:40px;background:white;border-radius:10px;text-align:center;color:#333;display:none;';
+    fallbackMsg.innerHTML = `
+        <h2 style="color:#dc3545;">Floor Plan PDF</h2>
+        <p>If the PDF doesn't load, you can <a href="images/FloorPlan.pdf" target="_blank" style="color:#007bff;">download it here</a></p>
+        <p style="font-size:0.9em;color:#666;margin-top:20px;">Make sure the file exists at: <code>images/FloorPlan.pdf</code></p>
+    `;
+    
+    // Fallback if iframe fails to load (some browsers)
+    pdfViewer.onerror = function() {
+        pdfViewer.style.display = 'none';
+        fallbackMsg.style.display = 'block';
+    };
+    
+    modalContent.appendChild(pdfViewer);
+    modalContent.appendChild(fallbackMsg);
+    modal.appendChild(modalContent);
+    modal.appendChild(closeBtn);
+    document.body.appendChild(modal);
+    
+    // Close button functionality
+    closeBtn.addEventListener('click', function() {
+        modal.remove();
+    });
+    
+    // Close on outside click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // Close on Escape key
+    const escapeHandler = function(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+}
+
+// Store beforeunload handler so we can remove it on logout
+let beforeUnloadHandler = null;
+
+// ================================================================
+// ====== Navigation Guard for Students ======
+function setupNavigationGuard() {
+    // Prevent browser back/forward navigation to login or admin pages
+    window.addEventListener('popstate', function(event) {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (userEmail) {
+            // If logged in, prevent going to login page
+            if (window.location.href.includes('login.html')) {
+                window.history.pushState(null, '', 'map.html');
+                window.location.href = 'map.html';
+            }
+        }
+    });
+    
+    // Prevent closing tab/window without logout
+    beforeUnloadHandler = function(e) {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (userEmail) {
+            const message = 'Are you sure you want to leave? Please use the Logout button to properly end your session.';
+            e.returnValue = message;
+            return message;
+        }
+    };
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+    
+    // Override all anchor clicks to check if they're allowed
+    document.addEventListener('click', function(e) {
+        const anchor = e.target.closest('a');
+        if (!anchor) return;
+        
+        const href = anchor.getAttribute('href');
+        if (!href) return;
+        
+        // Allow navigation to student pages
+        const allowedPages = ['dashboard.html', 'map.html', 'reports.html'];
+        const isAllowed = allowedPages.some(page => href.includes(page));
+        
+        // Block navigation to login or admin pages
+        if (href.includes('login.html') || href.includes('setup.html') || 
+            href.includes('user-management.html') || href.includes('rfid-management.html') ||
+            href.includes('student-reports.html') || href.includes('activity-logs.html') ||
+            href.includes('lcd-messages.html')) {
+            e.preventDefault();
+            alert('Please use the Logout button to leave your session.');
+            return false;
+        }
+        
+        // If it's a student page, allow it
+        if (isAllowed) {
+            return true;
+        }
+    }, true);
+}
+
 async function logout() {
+    // Remove beforeunload listener before logout
+    if (beforeUnloadHandler) {
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+    }
+    
     // Sign out from Supabase Auth
     await supabase.auth.signOut();
     

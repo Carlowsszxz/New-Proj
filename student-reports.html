@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Reports - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/setup.css">
+    <link rel="stylesheet" href="styles/student-reports.css">
+</head>
+<body>
+    <nav class="student-reports-nav">
+        <ul>
+            <li><a href="setup.html">Admin Dashboard</a></li>
+            <li><a href="user-management.html">User Management</a></li>
+            <li><a href="rfid-management.html">RFID Management</a></li>
+            <li><a href="student-reports.html" class="active">Student Reports</a></li>
+            <li><a href="activity-logs.html">Activity Logs</a></li>
+            <li><a href="lcd-messages.html">LCD Messages</a></li>
+            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1 class="page-title">Student Reports</h1>
+
+        <!-- Statistics Summary -->
+        <div class="admin-section">
+            <h2>Reports Summary</h2>
+            <div class="stats-summary" id="statsSummary">
+                <div class="stat-card stat-pending">
+                    <div class="stat-number" id="statPending">-</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card stat-reviewing">
+                    <div class="stat-number" id="statReviewing">-</div>
+                    <div class="stat-label">Reviewing</div>
+                </div>
+                <div class="stat-card stat-resolved">
+                    <div class="stat-number" id="statResolved">-</div>
+                    <div class="stat-label">Resolved</div>
+                </div>
+                <div class="stat-card stat-dismissed">
+                    <div class="stat-number" id="statDismissed">-</div>
+                    <div class="stat-label">Dismissed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Search Section -->
+        <div class="admin-section search-section">
+            <button id="searchToggle" class="search-toggle" onclick="toggleSearch()">🔍 Advanced Search</button>
+            
+            <form id="searchForm" class="search-form" onsubmit="event.preventDefault(); performSearch();">
+                <div class="search-form-group">
+                    <label for="searchUser">User (Email):</label>
+                    <input type="text" id="searchUser" placeholder="e.g., user@example.com">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchStatus">Status:</label>
+                    <select id="searchStatus">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="reviewing">Reviewing</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="dismissed">Dismissed</option>
+                    </select>
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchType">Report Type:</label>
+                    <select id="searchType">
+                        <option value="">All Types</option>
+                        <option value="issue">Issue</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="complaint">Complaint</option>
+                        <option value="suggestion">Suggestion</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchDateFrom">From Date/Time:</label>
+                    <input type="datetime-local" id="searchDateFrom">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchDateTo">To Date/Time:</label>
+                    <input type="datetime-local" id="searchDateTo">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchTitle">Title (contains):</label>
+                    <input type="text" id="searchTitle" placeholder="Search in title...">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchHasReply">Has Admin Reply:</label>
+                    <select id="searchHasReply">
+                        <option value="">All Reports</option>
+                        <option value="yes">Has Reply</option>
+                        <option value="no">No Reply</option>
+                    </select>
+                </div>
+                
+                <div class="search-actions">
+                    <button type="submit" class="btn-search">🔍 Search</button>
+                    <button type="button" class="btn-clear" onclick="clearSearch()">🔄 Clear</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-section">
+            <h2>All Student Reports</h2>
+            <div id="searchInfo" class="search-results-info hidden"></div>
+            
+            <!-- Quick Filter Buttons -->
+            <div class="quick-filters">
+                <button class="filter-btn all active" onclick="filterByStatus('')">All Reports</button>
+                <button class="filter-btn pending" onclick="filterByStatus('pending')">Pending</button>
+                <button class="filter-btn reviewing" onclick="filterByStatus('reviewing')">Reviewing</button>
+                <button class="filter-btn resolved" onclick="filterByStatus('resolved')">Resolved</button>
+                <button class="filter-btn dismissed" onclick="filterByStatus('dismissed')">Dismissed</button>
+            </div>
+            
+            <button onclick="viewAllReports()">🔄 Refresh Reports</button>
+            <div id="reportsData">Loading reports...</div>
+        </div>
+    </main>
+
+    <footer>
+        <p>RFID Login System - Student Reports Management</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/student-reports.js"></script>
+
+</body>
+</html>
+

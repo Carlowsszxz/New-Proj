@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
     
-    // Verify user exists in database
+    // Verify user exists in database and check if admin
     const { data: existingUser } = await supabase
         .from('users')
-            .select('*')
+        .select('*, is_admin')
         .eq('email', userEmail)
             .single();
         
@@ -40,13 +40,22 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
             
-    // User exists, load dashboard
+    // If admin, redirect to admin dashboard
+    if (existingUser.is_admin === true) {
+        window.location.href = 'setup.html';
+            return;
+        }
+        
+    // User exists and is not admin, load dashboard
     loadUserInfo(userEmail);
     
     // Auto-refresh dashboard every 2 seconds
     setInterval(function() {
         loadUserInfo(userEmail);
     }, 2000);
+    
+    // Prevent navigation away from student pages
+    setupNavigationGuard();
 });
 
 async function loadUserInfo(email) {
@@ -67,7 +76,16 @@ async function loadUserInfo(email) {
             return;
         }
         
-        document.getElementById('userName').textContent = users.email;
+        // Display user's name, fallback to email if name not available
+        let displayName = '';
+        if (users.first_name || users.last_name) {
+            displayName = (users.first_name || '') + ' ' + (users.last_name || '');
+            displayName = displayName.trim();
+        }
+        if (!displayName) {
+            displayName = users.email; // Fallback to email if no name
+        }
+        document.getElementById('userName').textContent = displayName;
         
         // Get user's RFID card
         const { data: rfidCards, error: rfidError } = await supabase
@@ -246,7 +264,70 @@ document.getElementById('assignRfidForm').addEventListener('submit', async funct
     }
 });
 
+// Store beforeunload handler so we can remove it on logout
+let beforeUnloadHandler = null;
+
+// ================================================================
+// ====== Navigation Guard for Students ======
+function setupNavigationGuard() {
+    // Prevent browser back/forward navigation to login or admin pages
+    window.addEventListener('popstate', function(event) {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (userEmail) {
+            // If logged in, prevent going to login page
+            if (window.location.href.includes('login.html')) {
+                window.history.pushState(null, '', 'dashboard.html');
+                window.location.href = 'dashboard.html';
+            }
+        }
+    });
+    
+    // Prevent closing tab/window without logout
+    beforeUnloadHandler = function(e) {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (userEmail) {
+            const message = 'Are you sure you want to leave? Please use the Logout button to properly end your session.';
+            e.returnValue = message; // For Chrome
+            return message; // For Firefox/Safari
+        }
+    };
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+    
+    // Override all anchor clicks to check if they're allowed
+    document.addEventListener('click', function(e) {
+        const anchor = e.target.closest('a');
+        if (!anchor) return;
+        
+        const href = anchor.getAttribute('href');
+        if (!href) return;
+        
+        // Allow navigation to student pages
+        const allowedPages = ['dashboard.html', 'map.html', 'reports.html'];
+        const isAllowed = allowedPages.some(page => href.includes(page));
+        
+        // Block navigation to login or admin pages
+        if (href.includes('login.html') || href.includes('setup.html') || 
+            href.includes('user-management.html') || href.includes('rfid-management.html') ||
+            href.includes('student-reports.html') || href.includes('activity-logs.html') ||
+            href.includes('lcd-messages.html')) {
+            e.preventDefault();
+            alert('Please use the Logout button to leave your session.');
+            return false;
+        }
+        
+        // If it's a student page, allow it
+        if (isAllowed) {
+            return true;
+        }
+    }, true);
+}
+
 async function logout() {
+    // Remove beforeunload listener before logout
+    if (beforeUnloadHandler) {
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+    }
+    
     // Sign out from Supabase Auth
     await supabase.auth.signOut();
     

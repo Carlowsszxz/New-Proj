@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Verify user exists in database and get user ID
     const { data: existingUser, error: userError } = await supabase
         .from('users')
-        .select('id')
+        .select('id, is_admin')
         .eq('email', userEmail)
         .single();
     
@@ -42,10 +42,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
     
+    // If admin, redirect to admin dashboard
+    if (existingUser.is_admin === true) {
+        window.location.href = 'setup.html';
+        return;
+    }
+    
     currentUserId = existingUser.id;
     
     // Load submitted reports
     await loadMyReports();
+    
+    // Prevent navigation away from student pages
+    setupNavigationGuard();
 });
 
 async function submitReport() {
@@ -184,7 +193,70 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Store beforeunload handler so we can remove it on logout
+let beforeUnloadHandler = null;
+
+// ================================================================
+// ====== Navigation Guard for Students ======
+function setupNavigationGuard() {
+    // Prevent browser back/forward navigation to login or admin pages
+    window.addEventListener('popstate', function(event) {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (userEmail) {
+            // If logged in, prevent going to login page
+            if (window.location.href.includes('login.html')) {
+                window.history.pushState(null, '', 'reports.html');
+                window.location.href = 'reports.html';
+            }
+        }
+    });
+    
+    // Prevent closing tab/window without logout
+    beforeUnloadHandler = function(e) {
+        const userEmail = sessionStorage.getItem('userEmail');
+        if (userEmail) {
+            const message = 'Are you sure you want to leave? Please use the Logout button to properly end your session.';
+            e.returnValue = message;
+            return message;
+        }
+    };
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+    
+    // Override all anchor clicks to check if they're allowed
+    document.addEventListener('click', function(e) {
+        const anchor = e.target.closest('a');
+        if (!anchor) return;
+        
+        const href = anchor.getAttribute('href');
+        if (!href) return;
+        
+        // Allow navigation to student pages
+        const allowedPages = ['dashboard.html', 'map.html', 'reports.html'];
+        const isAllowed = allowedPages.some(page => href.includes(page));
+        
+        // Block navigation to login or admin pages
+        if (href.includes('login.html') || href.includes('setup.html') || 
+            href.includes('user-management.html') || href.includes('rfid-management.html') ||
+            href.includes('student-reports.html') || href.includes('activity-logs.html') ||
+            href.includes('lcd-messages.html')) {
+            e.preventDefault();
+            alert('Please use the Logout button to leave your session.');
+            return false;
+        }
+        
+        // If it's a student page, allow it
+        if (isAllowed) {
+            return true;
+        }
+    }, true);
+}
+
 async function logout() {
+    // Remove beforeunload listener before logout
+    if (beforeUnloadHandler) {
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+    }
+    
     // Sign out from Supabase Auth
     await supabase.auth.signOut();
     

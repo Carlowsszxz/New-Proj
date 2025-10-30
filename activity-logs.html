@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Logs - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/setup.css">
+    <link rel="stylesheet" href="styles/activity-logs.css">
+</head>
+<body>
+    <nav class="activity-logs-nav">
+        <ul>
+            <li><a href="setup.html">Admin Dashboard</a></li>
+            <li><a href="user-management.html">User Management</a></li>
+            <li><a href="rfid-management.html">RFID Management</a></li>
+            <li><a href="student-reports.html">Student Reports</a></li>
+            <li><a href="activity-logs.html" class="active">Activity Logs</a></li>
+            <li><a href="lcd-messages.html">LCD Messages</a></li>
+            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1 class="page-title">Activity Logs</h1>
+
+        <!-- Advanced Search Section -->
+        <div class="admin-section search-section">
+            <button id="searchToggle" class="search-toggle" onclick="toggleSearch()">🔍 Advanced Search</button>
+            
+            <form id="searchForm" class="search-form" onsubmit="event.preventDefault(); performSearch();">
+                <div class="search-form-group">
+                    <label for="searchUserName">User Name:</label>
+                    <input type="text" id="searchUserName" placeholder="e.g., Carlos Alivarvar">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchEvent">Event Type:</label>
+                    <select id="searchEvent">
+                        <option value="">All Events</option>
+                        <option value="login">Login</option>
+                        <option value="logout">Logout</option>
+                        <option value="noise">Noise</option>
+                    </select>
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchDateFrom">From Date/Time:</label>
+                    <input type="datetime-local" id="searchDateFrom">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchDateTo">To Date/Time:</label>
+                    <input type="datetime-local" id="searchDateTo">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchSeat">Seat Number:</label>
+                    <input type="number" id="searchSeat" placeholder="e.g., 1, 2, 3..." min="1" max="8">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchRfid">RFID UID:</label>
+                    <input type="text" id="searchRfid" placeholder="e.g., 93B12CDA">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchNoiseMin">Min Noise (dB):</label>
+                    <input type="number" id="searchNoiseMin" placeholder="0" min="0" max="100">
+                </div>
+                
+                <div class="search-form-group">
+                    <label for="searchNoiseMax">Max Noise (dB):</label>
+                    <input type="number" id="searchNoiseMax" placeholder="100" min="0" max="100">
+                </div>
+                
+                <div class="search-actions">
+                    <button type="submit" class="btn-search">🔍 Search</button>
+                    <button type="button" class="btn-clear" onclick="clearSearch()">🔄 Clear</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-section">
+            <h2>Login/Logout Events</h2>
+            <div id="searchInfo" class="search-results-info hidden"></div>
+            <button onclick="viewLogs()">🔄 Refresh Events</button>
+            <div id="logData">Loading events...</div>
+        </div>
+    </main>
+
+    <footer>
+        <p>RFID Login System - Activity Logs</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/activity-logs.js"></script>
+
+</body>
+</html>
+

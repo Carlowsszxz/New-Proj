@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/setup.css">
+</head>
+<body>
+    <nav style="background:#333;color:white;padding:10px 20px;margin-bottom:20px;">
+        <ul style="list-style:none;padding:0;margin:0;display:flex;gap:20px;">
+            <li><a href="setup.html" style="color:white;text-decoration:none;">Admin Dashboard</a></li>
+            <li><a href="user-management.html" style="color:#ffd700;text-decoration:underline;">User Management</a></li>
+            <li><a href="rfid-management.html" style="color:white;text-decoration:none;">RFID Management</a></li>
+            <li><a href="student-reports.html" style="color:white;text-decoration:none;">Student Reports</a></li>
+            <li><a href="activity-logs.html" style="color:white;text-decoration:none;">Activity Logs</a></li>
+            <li><a href="lcd-messages.html" style="color:white;text-decoration:none;">LCD Messages</a></li>
+            <li style="margin-left:auto;"><button onclick="logout()" style="background:#dc3545;color:white;border:none;padding:5px 15px;border-radius:3px;cursor:pointer;">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1 style="text-align:center;">User Management</h1>
+
+        <!-- User Management -->
+        <div class="admin-section">
+            <h2>Add New User</h2>
+            <form onsubmit="event.preventDefault(); addUser();">
+                <div>
+                    <label for="userEmail">Email:</label>
+                    <input type="email" id="userEmail" required>
+                </div>
+                <div>
+                    <label for="userFirstName">First Name:</label>
+                    <input type="text" id="userFirstName">
+                </div>
+                <div>
+                    <label for="userLastName">Last Name:</label>
+                    <input type="text" id="userLastName">
+                </div>
+                <div>
+                    <label for="userPassword">Password:</label>
+                    <input type="password" id="userPassword" required placeholder="User's password (they can change it later)">
+                    <small style="color:#666;">Confirmation email will be sent to the user</small>
+                </div>
+                <div>
+                    <label for="makeAdmin">
+                        <input type="checkbox" id="makeAdmin"> Make Admin
+                    </label>
+                </div>
+                <button type="submit">Add User & Send Confirmation Email</button>
+            </form>
+            <p id="userResult"></p>
+        </div>
+
+        <div class="admin-section">
+            <h2>All Users</h2>
+            <button onclick="viewAllUsers()">Refresh</button>
+            <div id="allUsersData"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>RFID Login System - User Management</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/user-management.js"></script>
+
+</body>
+</html>
+

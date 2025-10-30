@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCD Messages - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/setup.css">
+    <link rel="stylesheet" href="styles/lcd-messages.css">
+</head>
+<body>
+    <nav class="lcd-nav">
+        <ul>
+            <li><a href="setup.html">Admin Dashboard</a></li>
+            <li><a href="user-management.html">User Management</a></li>
+            <li><a href="rfid-management.html">RFID Management</a></li>
+            <li><a href="student-reports.html">Student Reports</a></li>
+            <li><a href="activity-logs.html">Activity Logs</a></li>
+            <li><a href="lcd-messages.html" class="active">LCD Messages</a></li>
+            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1 class="page-title">LCD Message Control</h1>
+
+        <div class="admin-section">
+            <h2>Send Message to LCD Screen</h2>
+            <p>Type a message below to display on the ESP32 LCD screen (20 characters per line, 4 lines).</p>
+            
+            <form id="messageForm" class="message-form">
+                <div class="form-group">
+                    <label for="tableSelect" class="form-label">Select Table:</label>
+                    <select id="tableSelect" class="table-select">
+                        <option value="table-1">Table 1</option>
+                        <option value="table-2" disabled>Table 2 (Future Expansion)</option>
+                        <option value="table-3" disabled>Table 3 (Future Expansion)</option>
+                        <option value="table-4" disabled>Table 4 (Future Expansion)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="messageInput" class="form-label">Message (max 80 characters, 4 lines):</label>
+                    <textarea id="messageInput" placeholder="Enter your message here...&#10;Example:&#10;Welcome to Lab!&#10;Please maintain&#10;quiet environment" maxlength="80"></textarea>
+                    <div class="character-count">
+                        <span id="charCount">0</span> / 80 characters
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="priorityCheck">
+                        Priority (display immediately, override current screen)
+                    </label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label>
+                        <input type="number" id="displayDuration" value="10" min="1" max="300" class="duration-input">
+                        Display Duration (seconds, 1-300)
+                    </label>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Send to LCD</button>
+                    <button type="button" onclick="clearMessage()" class="btn btn-secondary">Clear Message</button>
+                </div>
+            </form>
+            
+            <div id="messagePreview" class="message-preview hidden">
+                <div class="preview-label">LCD Preview (20 chars × 4 lines):</div>
+                <div id="previewContent"></div>
+            </div>
+            
+            <div id="messageStatus" class="message-status hidden"></div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Recent Messages</h2>
+            <div id="messageList" class="message-list">
+                <p>Loading messages...</p>
+            </div>
+            <button onclick="loadMessages()" class="refresh-btn">Refresh</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>RFID Login System - LCD Message Control</p>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="scripts/lcd-messages.js"></script>
+
+</body>
+</html>
+
