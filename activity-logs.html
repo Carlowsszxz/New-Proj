@@ -4,98 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activity Logs - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
     <link rel="stylesheet" href="styles/activity-logs.css">
+    <style>
+      .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
+      [data-page="activity-logs"] .nav-label { left: 250px; right: auto; top: 25px; z-index: 99999; }
+    </style>
 </head>
-<body>
-    <nav class="activity-logs-nav">
-        <ul>
-            <li><a href="setup.html">Admin Dashboard</a></li>
-            <li><a href="user-management.html">User Management</a></li>
-            <li><a href="rfid-management.html">RFID Management</a></li>
-            <li><a href="student-reports.html">Student Reports</a></li>
-            <li><a href="activity-logs.html" class="active">Activity Logs</a></li>
-            <li><a href="lcd-messages.html">LCD Messages</a></li>
-            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
-        </ul>
+<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="activity-logs">
+    <!-- Visual Effects -->
+    <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
+    <div id="library-background" class="library-background" aria-hidden="true"></div>
+    <div id="paper-background" class="paper-background" aria-hidden="true"></div>
+
+    <!-- Modern Admin Sidebar/Header -->
+    <button id="headerTrigger" class="header-trigger" aria-label="Toggle header navigation">
+        <svg class="header-trigger-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div id="navLabel" class="nav-label"></div>
+    <nav id="headerNav" class="modern-sidebar header-collapsed">
+        <div class="sidebar-brand"><img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" /></div>
+        <a href="setup.html" class="sidebar-nav-item" data-label="Admin Dashboard" aria-label="Admin Dashboard"><i data-lucide="settings" class="sidebar-icon"></i></a>
+        <a href="user-management.html" class="sidebar-nav-item" data-label="User Management" aria-label="User Management"><i data-lucide="users" class="sidebar-icon"></i></a>
+        <a href="rfid-management.html" class="sidebar-nav-item" data-label="RFID Management" aria-label="RFID Management"><i data-lucide="contact" class="sidebar-icon"></i></a>
+        <a href="student-reports.html" class="sidebar-nav-item" data-label="Student Reports" aria-label="Student Reports"><i data-lucide="book-open-check" class="sidebar-icon"></i></a>
+        <a href="activity-logs.html" class="sidebar-nav-item active" data-label="Activity Logs" aria-label="Activity Logs"><i data-lucide="list" class="sidebar-icon"></i></a>
+        <a href="lcd-messages.html" class="sidebar-nav-item" data-label="LCD Messages" aria-label="LCD Messages"><i data-lucide="tv" class="sidebar-icon"></i></a>
+        <a href="#" onclick="logout(); return false;" class="sidebar-nav-item" data-label="Logout" aria-label="Logout"><i data-lucide="log-out" class="sidebar-icon"></i></a>
     </nav>
 
-    <main>
-        <h1 class="page-title">Activity Logs</h1>
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header"><img src="images/UMak_Logo_Registered.png" alt="UMak Logo" /><div class="mobile-menu-title">Admin Navigation</div></div>
+        <a href="setup.html" class="mobile-nav-item"><i data-lucide="settings" class="mobile-nav-icon"></i><span>Dashboard</span></a>
+        <a href="user-management.html" class="mobile-nav-item"><i data-lucide="users" class="mobile-nav-icon"></i><span>User Management</span></a>
+        <a href="rfid-management.html" class="mobile-nav-item"><i data-lucide="contact" class="mobile-nav-icon"></i><span>RFID Management</span></a>
+        <a href="student-reports.html" class="mobile-nav-item"><i data-lucide="book-open-check" class="mobile-nav-icon"></i><span>Student Reports</span></a>
+        <a href="activity-logs.html" class="mobile-nav-item active"><i data-lucide="list" class="mobile-nav-icon"></i><span>Activity Logs</span></a>
+        <a href="lcd-messages.html" class="mobile-nav-item"><i data-lucide="tv" class="mobile-nav-icon"></i><span>LCD Messages</span></a>
+        <a href="#" onclick="logout(); return false;" class="mobile-nav-item"><i data-lucide="log-out" class="mobile-nav-icon"></i><span>Logout</span></a>
+    </div>
 
-        <!-- Advanced Search Section -->
-        <div class="admin-section search-section">
-            <button id="searchToggle" class="search-toggle" onclick="toggleSearch()">🔍 Advanced Search</button>
-            
-            <form id="searchForm" class="search-form" onsubmit="event.preventDefault(); performSearch();">
-                <div class="search-form-group">
-                    <label for="searchUserName">User Name:</label>
-                    <input type="text" id="searchUserName" placeholder="e.g., Carlos Alivarvar">
+    <main class="flex-1 w-full py-16 px-4 md:px-8">
+        <div id="fade-content" class="w-full max-w-5xl mx-auto fade-content space-y-12">
+            <div class="flex flex-col items-center py-5">
+                <div class="flex items-center gap-5 mb-3">
+                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
+                        <i data-lucide="list" class="w-8 h-8 text-indigo-800"></i>
+                    </span>
+                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">Activity Logs</h1>
                 </div>
-                
-                <div class="search-form-group">
-                    <label for="searchEvent">Event Type:</label>
-                    <select id="searchEvent">
-                        <option value="">All Events</option>
-                        <option value="login">Login</option>
-                        <option value="logout">Logout</option>
-                        <option value="noise">Noise</option>
-                    </select>
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchDateFrom">From Date/Time:</label>
-                    <input type="datetime-local" id="searchDateFrom">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchDateTo">To Date/Time:</label>
-                    <input type="datetime-local" id="searchDateTo">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchSeat">Seat Number:</label>
-                    <input type="number" id="searchSeat" placeholder="e.g., 1, 2, 3..." min="1" max="8">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchRfid">RFID UID:</label>
-                    <input type="text" id="searchRfid" placeholder="e.g., 93B12CDA">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchNoiseMin">Min Noise (dB):</label>
-                    <input type="number" id="searchNoiseMin" placeholder="0" min="0" max="100">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchNoiseMax">Max Noise (dB):</label>
-                    <input type="number" id="searchNoiseMax" placeholder="100" min="0" max="100">
-                </div>
-                
-                <div class="search-actions">
-                    <button type="submit" class="btn-search">🔍 Search</button>
-                    <button type="button" class="btn-clear" onclick="clearSearch()">🔄 Clear</button>
-                </div>
-            </form>
-        </div>
+                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
+            </div>
 
-        <div class="admin-section">
-            <h2>Login/Logout Events</h2>
-            <div id="searchInfo" class="search-results-info hidden"></div>
-            <button onclick="viewLogs()">🔄 Refresh Events</button>
-            <div id="logData">Loading events...</div>
+            <!-- Advanced Search -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-emerald-200 p-10">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-emerald-100 shadow">
+                        <i data-lucide="search" class="w-6 h-6 text-emerald-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-emerald-800">Advanced Search</h2>
+                    <button id="searchToggle" onclick="toggleSearch()" class="ml-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Toggle</button>
+                </div>
+                <form id="searchForm" class="grid md:grid-cols-3 gap-4" onsubmit="event.preventDefault(); performSearch();">
+                    <div><label for="searchUserName" class="block text-sm font-medium text-slate-700 mb-1">User Name</label><input type="text" id="searchUserName" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., Carlos Alivarvar"></div>
+                    <div><label for="searchEvent" class="block text-sm font-medium text-slate-700 mb-1">Event Type</label><select id="searchEvent" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"><option value="">All Events</option><option value="login">Login</option><option value="logout">Logout</option><option value="noise">Noise</option></select></div>
+                    <div><label for="searchSeat" class="block text-sm font-medium text-slate-700 mb-1">Seat Number</label><input type="number" id="searchSeat" min="1" max="8" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., 1, 2, 3..."></div>
+                    <div><label for="searchDateFrom" class="block text-sm font-medium text-slate-700 mb-1">From Date/Time</label><input type="datetime-local" id="searchDateFrom" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"></div>
+                    <div><label for="searchDateTo" class="block text-sm font-medium text-slate-700 mb-1">To Date/Time</label><input type="datetime-local" id="searchDateTo" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"></div>
+                    <div><label for="searchRfid" class="block text-sm font-medium text-slate-700 mb-1">RFID UID</label><input type="text" id="searchRfid" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., 93B12CDA"></div>
+                    <div><label for="searchNoiseMin" class="block text-sm font-medium text-slate-700 mb-1">Min Noise (dB)</label><input type="number" id="searchNoiseMin" min="0" max="100" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="0"></div>
+                    <div><label for="searchNoiseMax" class="block text-sm font-medium text-slate-700 mb-1">Max Noise (dB)</label><input type="number" id="searchNoiseMax" min="0" max="100" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="100"></div>
+                    <div class="md:col-span-3 flex gap-3 justify-end mt-2"><button type="submit" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Search</button><button type="button" onclick="clearSearch()" class="px-5 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold shadow">Clear</button></div>
+                </form>
+            </section>
+
+            <!-- Logs -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
+                        <i data-lucide="history" class="w-6 h-6 text-pink-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">Login/Logout Events</h2>
+                    <div id="searchInfo" class="ml-auto text-sm text-slate-600 hidden"></div>
+                </div>
+                <div class="flex justify-end mb-4">
+                    <button onclick="viewLogs()" class="px-6 py-2.5 rounded-xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh Events</button>
+                </div>
+                <div id="logData">Loading events...</div>
+            </section>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - Activity Logs</p>
+    <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
+        <p class="mb-1">University of Makati - RFID Login System • Activity Logs</p>
+        <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="scripts/activity-logs.js"></script>
-
+    <script src="scripts/login-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/activity-logs.js"></script>
 </body>
 </html>
 

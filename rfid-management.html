@@ -4,62 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RFID Card Management - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
+    <style>
+      .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
+      [data-page="rfid-management"] .nav-label {
+        left: 250px;
+        right: auto;
+        top: 25px;
+        z-index: 99999;
+      }
+    </style>
 </head>
-<body>
-    <nav style="background:#333;color:white;padding:10px 20px;margin-bottom:20px;">
-        <ul style="list-style:none;padding:0;margin:0;display:flex;gap:20px;">
-            <li><a href="setup.html" style="color:white;text-decoration:none;">Admin Dashboard</a></li>
-            <li><a href="user-management.html" style="color:white;text-decoration:none;">User Management</a></li>
-            <li><a href="rfid-management.html" style="color:#ffd700;text-decoration:underline;">RFID Management</a></li>
-            <li><a href="student-reports.html" style="color:white;text-decoration:none;">Student Reports</a></li>
-            <li><a href="activity-logs.html" style="color:white;text-decoration:none;">Activity Logs</a></li>
-            <li><a href="lcd-messages.html" style="color:white;text-decoration:none;">LCD Messages</a></li>
-            <li style="margin-left:auto;"><button onclick="logout()" style="background:#dc3545;color:white;border:none;padding:5px 15px;border-radius:3px;cursor:pointer;">Logout</button></li>
-        </ul>
+<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="rfid-management">
+    <!-- Visual Effects -->
+    <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
+    <div id="library-background" class="library-background" aria-hidden="true"></div>
+    <div id="paper-background" class="paper-background" aria-hidden="true"></div>
+
+    <!-- Modern Admin Sidebar/Header -->
+    <button id="headerTrigger" class="header-trigger" aria-label="Toggle header navigation">
+        <svg class="header-trigger-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div id="navLabel" class="nav-label"></div>
+    <nav id="headerNav" class="modern-sidebar header-collapsed">
+        <div class="sidebar-brand"><img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" /></div>
+        <a href="setup.html" class="sidebar-nav-item" data-label="Admin Dashboard" aria-label="Admin Dashboard"><i data-lucide="settings" class="sidebar-icon"></i></a>
+        <a href="user-management.html" class="sidebar-nav-item" data-label="User Management" aria-label="User Management"><i data-lucide="users" class="sidebar-icon"></i></a>
+        <a href="rfid-management.html" class="sidebar-nav-item active" data-label="RFID Management" aria-label="RFID Management"><i data-lucide="contact" class="sidebar-icon"></i></a>
+        <a href="student-reports.html" class="sidebar-nav-item" data-label="Student Reports" aria-label="Student Reports"><i data-lucide="book-open-check" class="sidebar-icon"></i></a>
+        <a href="activity-logs.html" class="sidebar-nav-item" data-label="Activity Logs" aria-label="Activity Logs"><i data-lucide="list" class="sidebar-icon"></i></a>
+        <a href="lcd-messages.html" class="sidebar-nav-item" data-label="LCD Messages" aria-label="LCD Messages"><i data-lucide="tv" class="sidebar-icon"></i></a>
+        <a href="#" onclick="logout(); return false;" class="sidebar-nav-item" data-label="Logout" aria-label="Logout"><i data-lucide="log-out" class="sidebar-icon"></i></a>
     </nav>
 
-    <main>
-        <h1 style="text-align:center;">RFID Card Management</h1>
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header"><img src="images/UMak_Logo_Registered.png" alt="UMak Logo" /><div class="mobile-menu-title">Admin Navigation</div></div>
+        <a href="setup.html" class="mobile-nav-item"><i data-lucide="settings" class="mobile-nav-icon"></i><span>Dashboard</span></a>
+        <a href="user-management.html" class="mobile-nav-item"><i data-lucide="users" class="mobile-nav-icon"></i><span>User Management</span></a>
+        <a href="rfid-management.html" class="mobile-nav-item active"><i data-lucide="contact" class="mobile-nav-icon"></i><span>RFID Management</span></a>
+        <a href="student-reports.html" class="mobile-nav-item"><i data-lucide="book-open-check" class="mobile-nav-icon"></i><span>Student Reports</span></a>
+        <a href="activity-logs.html" class="mobile-nav-item"><i data-lucide="list" class="mobile-nav-icon"></i><span>Activity Logs</span></a>
+        <a href="lcd-messages.html" class="mobile-nav-item"><i data-lucide="tv" class="mobile-nav-icon"></i><span>LCD Messages</span></a>
+        <a href="#" onclick="logout(); return false;" class="mobile-nav-item"><i data-lucide="log-out" class="mobile-nav-icon"></i><span>Logout</span></a>
+    </div>
 
-        <!-- RFID Management -->
-        <div class="admin-section">
-            <h2>Assign RFID Card</h2>
-            <div>
-                <label for="rfidUid">RFID UID:</label>
-                <input type="text" id="rfidUid" placeholder="Enter RFID UID (e.g., 93B12CDA)" maxlength="20">
-            </div>
-            <div>
-                <label for="userSearch">Assign to User:</label>
-                <div style="position:relative;margin-bottom:10px;">
-                    <div style="position:relative;">
-                        <input type="text" id="userSearch" placeholder="Search users by email or name..." style="width:100%;padding:10px;padding-right:40px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;" oninput="filterUsers()" onfocus="showUserDropdown()">
-                        <button onclick="clearUserSelection()" id="clearUserBtn" style="display:none;position:absolute;right:5px;top:50%;transform:translateY(-50%);background:#dc3545;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;font-size:18px;line-height:1;">×</button>
-                    </div>
-                    <div id="userDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1px solid #ddd;border-radius:4px;max-height:300px;overflow-y:auto;z-index:1000;box-shadow:0 4px 6px rgba(0,0,0,0.1);margin-top:5px;"></div>
+    <main class="flex-1 w-full py-16 px-4 md:px-8">
+        <div id="fade-content" class="w-full max-w-3xl mx-auto fade-content space-y-12">
+            <div class="flex flex-col items-center py-5">
+                <div class="flex items-center gap-5 mb-3">
+                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
+                        <i data-lucide="contact" class="w-8 h-8 text-indigo-800"></i>
+                    </span>
+                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">RFID Card Management</h1>
                 </div>
-                <button onclick="loadUsers()">Refresh Users</button>
-                <input type="hidden" id="userSelect" value="">
+                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
             </div>
-            <button onclick="assignRfid()">Assign RFID Card</button>
-            <p id="rfidResult"></p>
-            
-            <div style="margin-top: 20px;">
-                <h3>All RFID Cards</h3>
-                <button onclick="viewAllRfid()">Refresh List</button>
+
+            <!-- Assign RFID Card -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-indigo-200 p-10">
+                <div class="flex items-center gap-4 mb-7">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-indigo-100 shadow">
+                        <i data-lucide="scan-line" class="w-6 h-6 text-indigo-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-indigo-800">Assign RFID Card</h2>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="rfidUid" class="block mb-1 text-sm font-medium text-slate-700">RFID UID:</label>
+                        <input type="text" id="rfidUid" maxlength="20" placeholder="Enter RFID UID (e.g., 93B12CDA)" class="w-full p-3 rounded-lg border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition">
+                    </div>
+                    <div>
+                        <label for="userSearch" class="block mb-1 text-sm font-medium text-slate-700">Assign to User:</label>
+                        <div class="relative mb-2">
+                            <input type="text" id="userSearch" placeholder="Search users by email or name..." class="w-full p-3 pr-10 rounded-lg border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition" oninput="filterUsers()" onfocus="showUserDropdown()">
+                            <button id="clearUserBtn" onclick="clearUserSelection()" class="hidden absolute right-2 top-1/2 -translate-y-1/2 bg-pink-600 text-white px-2 py-1 rounded text-base">×</button>
+                            <div id="userDropdown" class="hidden absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-lg max-h-72 overflow-y-auto z-50 shadow-lg mt-1"></div>
+                            <input type="hidden" id="userSelect" value="">
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="loadUsers()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-semibold shadow">Refresh Users</button>
+                            <button onclick="assignRfid()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Assign RFID Card</button>
+                        </div>
+                        <p id="rfidResult" class="mt-2 text-sm"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- All RFID Cards -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
+                <div class="flex items-center gap-4 mb-7">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
+                        <i data-lucide="id-card" class="w-6 h-6 text-pink-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">All RFID Cards</h2>
+                </div>
+                <div class="flex justify-end mb-4">
+                    <button onclick="viewAllRfid()" class="px-6 py-2.5 rounded-xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh List</button>
+                </div>
                 <div id="allRfidData"></div>
-            </div>
+            </section>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - RFID Card Management</p>
+    <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
+        <p class="mb-1">University of Makati - RFID Login System • RFID Card Management</p>
+        <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="scripts/rfid-management.js"></script>
-
+    <script src="scripts/login-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/rfid-management.js"></script>
 </body>
 </html>
 

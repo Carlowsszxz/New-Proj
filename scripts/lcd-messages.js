@@ -35,15 +35,34 @@ async function checkAdminAuth() {
     }
     
     const userEmail = session.user.email;
+    const authUid = session.user.id;
     
-    // Check if user is admin
-    const { data: user, error } = await supabase
-        .from('users')
-        .select('is_admin')
-        .eq('email', userEmail)
-        .single();
+    // Check if user is admin (try by email first, then fallback to id)
+    let isAdmin = false;
+    try {
+        let { data: user, error } = await supabase
+            .from('users')
+            .select('is_admin')
+            .eq('email', userEmail)
+            .single();
+        if (error || !user) {
+            // Fallback by auth UID → assumes public.users.id stores auth.uid
+            const fallback = await supabase
+                .from('users')
+                .select('is_admin')
+                .eq('id', authUid)
+                .single();
+            if (!fallback.error && fallback.data) {
+                isAdmin = !!fallback.data.is_admin;
+            }
+        } else {
+            isAdmin = !!user.is_admin;
+        }
+    } catch (e) {
+        // ignore; handled below
+    }
     
-    if (error || !user || !user.is_admin) {
+    if (!isAdmin) {
         alert('Access denied. Admin privileges required.');
         window.location.href = 'dashboard.html';
         return;

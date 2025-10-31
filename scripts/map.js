@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // User exists and is not admin, load map
     loadMap();
     
-    // Auto-refresh every 5 seconds
-    setInterval(loadMap, 5000);
+    // Auto-refresh every 2 seconds for real-time updates
+    setInterval(loadMap, 2000);
     
     // Prevent navigation away from student pages
     setupNavigationGuard();
@@ -58,43 +58,229 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 async function loadMap() {
     try {
-        // Get all seats for table-1
-        const { data: seats, error } = await supabase
+        // Add loading indicator
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            // Target SVG (Lucide creates SVG) or fallback to i element
+            const icon = refreshBtn.querySelector('svg') || refreshBtn.querySelector('i');
+            if (icon) {
+                icon.style.animation = 'spin 1s linear infinite';
+            }
+        }
+        
+        // Check if user is logged in via RFID
+        const userEmail = sessionStorage.getItem('userEmail');
+        
+        // Get user's information
+        const { data: user, error: userError } = await supabase
+            .from('users')
+            .select('id, email')
+            .eq('email', userEmail)
+            .single();
+        
+        if (userError) throw userError;
+        
+        // Get user's RFID card
+        const { data: rfidCards, error: rfidError } = await supabase
+            .from('rfid_cards')
+            .select('rfid_uid')
+            .eq('user_id', user.id)
+            .eq('is_active', true);
+        
+        // Check if user is logged in via RFID
+        let isLoggedIn = false;
+        let userSeatNumber = null;
+        
+        if (rfidCards && rfidCards.length > 0) {
+            // Check latest activity log to see if user is logged in
+            const { data: latestLog, error: logError } = await supabase
+                .from('actlog_iot')
+                .select('event, seat_number')
+                .eq('uid', rfidCards[0].rfid_uid)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+            
+            // User is logged in if latest event is 'login'
+            if (latestLog && latestLog.event === 'login') {
+                isLoggedIn = true;
+                userSeatNumber = latestLog.seat_number;
+            }
+        }
+        
+        // Get all seats for table-1 (always show, regardless of login status)
+        const { data: seats, error: seatsError } = await supabase
             .from('occupancy')
             .select('*')
             .eq('table_id', 'table-1')
             .order('seat_number', { ascending: true });
         
-        if (error) throw error;
+        // Handle case where seats might not exist yet or error occurs
+        let seatsData = seats || [];
+        if (seatsError) {
+            console.warn('Error fetching seats:', seatsError);
+            // Continue with empty seats array - will show all as available
+        }
+        
+        // Calculate occupancy stats
+        const totalSeats = 8;
+        const occupiedSeats = seatsData.filter(s => s.is_occupied === true).length || 0;
+        const availableSeats = totalSeats - occupiedSeats;
+        const occupancyPercent = Math.round((occupiedSeats / totalSeats) * 100);
+        
+        // Update stats bar - always show stats even if no seats found
+        const statsBar = document.getElementById('statsBar');
+        if (statsBar) {
+            statsBar.innerHTML = `
+                <div class="flex items-center justify-center gap-6 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="circle" class="w-5 h-5 text-gray-500"></i>
+                        <span class="font-semibold text-gray-700">Available: ${availableSeats}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="circle" class="w-5 h-5 text-green-600"></i>
+                        <span class="font-semibold text-gray-700">Occupied: ${occupiedSeats}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i>
+                        <span class="font-semibold text-gray-700">Capacity: ${occupancyPercent}%</span>
+                    </div>
+                </div>
+            `;
+            
+            // Reinitialize icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+        
+        // Update user status banner
+        const userBanner = document.getElementById('userBanner');
+        if (userBanner) {
+            if (isLoggedIn && userSeatNumber) {
+                userBanner.innerHTML = `
+                    <div class="flex items-center justify-center gap-2">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-indigo-600"></i>
+                        <span class="font-semibold text-indigo-700">You're at Seat ${userSeatNumber}</span>
+                        <span class="text-sm text-gray-600">• Logged in via RFID</span>
+                    </div>
+                `;
+                userBanner.className = 'p-4 rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 mb-6';
+            } else {
+                userBanner.innerHTML = `
+                    <div class="flex items-center justify-center gap-2">
+                        <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                        <span class="text-gray-700">Tap your RFID card at the reader to occupy a seat</span>
+                    </div>
+                `;
+                userBanner.className = 'p-4 rounded-lg bg-blue-50 border border-blue-200 mb-6';
+            }
+            
+            // Reinitialize icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
         
         // Clear existing map
         const mapDiv = document.getElementById('seatMap');
+        mapDiv.classList.remove('message-mode');
         mapDiv.innerHTML = '';
         
         // Display 8 seats
         for (let i = 1; i <= 8; i++) {
-            const seat = seats?.find(s => s.seat_number === i) || {
+            const seat = seatsData.find(s => s.seat_number === i) || {
                 seat_number: i,
                 is_occupied: false,
                 occupied_by: null
             };
             
             const seatDiv = document.createElement('div');
-            seatDiv.className = seat.is_occupied ? 'seat occupied' : 'seat available';
             
-            seatDiv.innerHTML = `
-                <div class="seat-number">Seat ${i}</div>
-                <div class="seat-details">
-                    ${seat.is_occupied ? '🔒 Occupied' : '✅ Available'}
-                </div>
-            `;
+            // Check if this is the user's seat
+            const isUserSeat = isLoggedIn && userSeatNumber === i;
+            
+            if (isUserSeat) {
+                seatDiv.className = 'seat user-seat';
+                seatDiv.innerHTML = `
+                    <div class="seat-badge">YOU</div>
+                    <div class="seat-number">Seat ${i}</div>
+                    <div class="seat-details">🎯 Your Seat</div>
+                `;
+            } else if (seat.is_occupied) {
+                seatDiv.className = 'seat occupied';
+                seatDiv.innerHTML = `
+                    <div class="seat-number">Seat ${i}</div>
+                    <div class="seat-details">🔒 Occupied</div>
+                `;
+            } else {
+                seatDiv.className = 'seat available';
+                seatDiv.innerHTML = `
+                    <div class="seat-number">Seat ${i}</div>
+                    <div class="seat-details">✅ Available</div>
+                `;
+            }
             
             mapDiv.appendChild(seatDiv);
         }
         
+        // Update title based on login status
+        const mapTitle = document.getElementById('mapTitle');
+        if (mapTitle) {
+            if (isLoggedIn && userSeatNumber) {
+                // User is logged in - show their table
+                mapTitle.textContent = `Seat Map - Table 1`;
+            } else {
+                // User not logged in - just show generic title
+                mapTitle.textContent = 'Seat Map';
+            }
+            mapTitle.style.display = 'block';
+        }
+        
+        // Show all UI elements
+        const mapButtons = document.getElementById('mapButtons');
+        const mapLegend = document.getElementById('mapLegend');
+        const lastUpdate = document.getElementById('lastUpdate');
+        if (mapButtons) mapButtons.style.display = 'flex';
+        if (mapLegend) mapLegend.style.display = 'flex';
+        if (lastUpdate) lastUpdate.style.display = 'block';
+        
     } catch (err) {
         console.error('Error loading map:', err);
-        document.getElementById('seatMap').innerHTML = '<p>Error loading seat map</p>';
+        
+        // Show error in stats bar
+        const statsBar = document.getElementById('statsBar');
+        if (statsBar) {
+            statsBar.innerHTML = `
+                <div class="flex items-center justify-center gap-6 flex-wrap">
+                    <span class="text-red-600">Error loading stats: ${err.message || 'Unknown error'}</span>
+                </div>
+            `;
+        }
+        
+        // Show error in seat map
+        const seatMap = document.getElementById('seatMap');
+        if (seatMap) {
+            seatMap.innerHTML = '<p class="text-red-600">Error loading seat map. Please refresh.</p>';
+        }
+    } finally {
+        // Remove loading indicator
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            // Target SVG (Lucide creates SVG) or fallback to i element
+            const icon = refreshBtn.querySelector('svg') || refreshBtn.querySelector('i');
+            if (icon) {
+                icon.style.animation = '';
+            }
+        }
+        
+        // Update last refresh time
+        const lastUpdate = document.getElementById('lastUpdate');
+        if (lastUpdate) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            lastUpdate.textContent = `Updated: ${timeString}`;
+        }
     }
 }
 
@@ -110,8 +296,8 @@ function showFullMap() {
     // Create close button
     const closeBtn = document.createElement('button');
     closeBtn.className = 'close-full-map-btn';
-    closeBtn.textContent = '×';
-    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;background:#dc3545;color:white;border:none;padding:15px 25px;border-radius:50%;cursor:pointer;font-size:32px;width:50px;height:50px;line-height:20px;z-index:10001;box-shadow:0 4px 10px rgba(0,0,0,0.3);';
+    closeBtn.setAttribute('aria-label', 'Close full map view');
+    closeBtn.innerHTML = '<i data-lucide="x" class="close-icon"></i>';
     
     // Create PDF viewer element for floor plan
     const pdfViewer = document.createElement('iframe');
@@ -144,6 +330,13 @@ function showFullMap() {
     closeBtn.addEventListener('click', function() {
         modal.remove();
     });
+    
+    // Initialize Lucide icon for close button
+    if (window.lucide) {
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    }
     
     // Close on outside click
     modal.addEventListener('click', function(e) {
@@ -180,16 +373,7 @@ function setupNavigationGuard() {
         }
     });
     
-    // Prevent closing tab/window without logout
-    beforeUnloadHandler = function(e) {
-        const userEmail = sessionStorage.getItem('userEmail');
-        if (userEmail) {
-            const message = 'Are you sure you want to leave? Please use the Logout button to properly end your session.';
-            e.returnValue = message;
-            return message;
-        }
-    };
-    window.addEventListener('beforeunload', beforeUnloadHandler);
+    // Removed leave-warning on student pages
     
     // Override all anchor clicks to check if they're allowed
     document.addEventListener('click', function(e) {

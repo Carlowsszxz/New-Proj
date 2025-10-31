@@ -3,88 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - RFID System</title>
+    <title>Admin Dashboard - University of Makati</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
+    <style>
+      .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      .card-lift:hover { box-shadow: 0 22px 64px rgba(206,81,255,0.17), 0 2px 18px 2px rgba(93,102,254,0.19)!important; transform: scale(1.02); z-index:10; }
+      @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
+    </style>
 </head>
-<body>
-    <nav class="admin-nav">
-        <ul>
-            <li><a href="setup.html" class="active">Admin Dashboard</a></li>
-            <li><a href="user-management.html">User Management</a></li>
-            <li><a href="rfid-management.html">RFID Management</a></li>
-            <li><a href="student-reports.html">Student Reports</a></li>
-            <li><a href="activity-logs.html">Activity Logs</a></li>
-            <li><a href="lcd-messages.html">LCD Messages</a></li>
-            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
-        </ul>
+<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="setup">
+    <!-- Visual Effects -->
+    <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
+    <div id="library-background" class="library-background" aria-hidden="true"></div>
+    <div id="paper-background" class="paper-background" aria-hidden="true"></div>
+    
+    <style>
+      [data-page="setup"] .nav-label {
+        left: 250px;
+        right: auto;
+        top: 25px;
+        z-index: 99999;
+        /* keep other styles (padding, font, bg, etc.) as is */
+      }
+    </style>
+
+    <!-- Modern Sidebar/Admin Navbar -->
+    <button id="headerTrigger" class="header-trigger" aria-label="Toggle header navigation">
+        <svg class="header-trigger-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </button>
+    <div id="navLabel" class="nav-label"></div>
+    <nav id="headerNav" class="modern-sidebar header-collapsed">
+        <div class="sidebar-brand">
+            <img src="images/umak_logoresgsitered.png" alt="University of Makati Logo" onerror="this.onerror=null;this.src='images/umak_logoresgsitered.jpg';" />
+        </div>
+        <a href="setup.html" class="sidebar-nav-item active" data-label="Admin Dashboard" aria-label="Admin Dashboard"><i data-lucide="settings" class="sidebar-icon"></i></a>
+        <a href="user-management.html" class="sidebar-nav-item" data-label="User Management" aria-label="User Management"><i data-lucide="users" class="sidebar-icon"></i></a>
+        <a href="rfid-management.html" class="sidebar-nav-item" data-label="RFID Management" aria-label="RFID Management"><i data-lucide="contact" class="sidebar-icon"></i></a>
+        <a href="student-reports.html" class="sidebar-nav-item" data-label="Student Reports" aria-label="Student Reports"><i data-lucide="book-open-check" class="sidebar-icon"></i></a>
+        <a href="activity-logs.html" class="sidebar-nav-item" data-label="Activity Logs" aria-label="Activity Logs"><i data-lucide="list" class="sidebar-icon"></i></a>
+        <a href="lcd-messages.html" class="sidebar-nav-item" data-label="LCD Messages" aria-label="LCD Messages"><i data-lucide="tv" class="sidebar-icon"></i></a>
+        <a href="#" onclick="logout(); return false;" class="sidebar-nav-item" data-label="Logout" aria-label="Logout"><i data-lucide="log-out" class="sidebar-icon"></i></a>
     </nav>
 
-    <main>
-        <h1 class="page-title">Admin Dashboard</h1>
-
-        <!-- Statistics Overview -->
-        <div class="admin-section">
-            <h2>System Statistics</h2>
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-box">
-                    <div class="stat-value" id="totalUsers">-</div>
-                    <div class="stat-label">Total Users</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="totalRfid">-</div>
-                    <div class="stat-label">RFID Cards</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="occupiedSeats">-</div>
-                    <div class="stat-label">Occupied Seats</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="pendingReports">-</div>
-                    <div class="stat-label">Pending Reports</div>
-                </div>
-            </div>
-            <button onclick="loadStats()">Refresh Stats</button>
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header">
+            <img src="images/umak_logoresgsitered.png" alt="UMak Logo" onerror="this.onerror=null;this.src='images/umak_logoresgsitered.jpg';" />
+            <div class="mobile-menu-title">Admin Navigation</div>
         </div>
+        <a href="setup.html" class="mobile-nav-item active"><i data-lucide="settings" class="mobile-nav-icon"></i><span>Dashboard</span></a>
+        <a href="user-management.html" class="mobile-nav-item"><i data-lucide="users" class="mobile-nav-icon"></i><span>User Management</span></a>
+        <a href="rfid-management.html" class="mobile-nav-item"><i data-lucide="contact" class="mobile-nav-icon"></i><span>RFID Management</span></a>
+        <a href="student-reports.html" class="mobile-nav-item"><i data-lucide="book-open-check" class="mobile-nav-icon"></i><span>Student Reports</span></a>
+        <a href="activity-logs.html" class="mobile-nav-item"><i data-lucide="list" class="mobile-nav-icon"></i><span>Activity Logs</span></a>
+        <a href="lcd-messages.html" class="mobile-nav-item"><i data-lucide="tv" class="mobile-nav-icon"></i><span>LCD Messages</span></a>
+        <a href="#" onclick="logout(); return false;" class="mobile-nav-item"><i data-lucide="log-out" class="mobile-nav-icon"></i><span>Logout</span></a>
+    </div>
 
-        <!-- Seat Occupancy -->
-        <div class="admin-section">
-            <h2>Seat Occupancy</h2>
-            <div class="filter-group">
-                <label for="occupancyTableSelect">Select Table:</label>
-                <select id="occupancyTableSelect" onchange="viewOccupancy()" class="table-select">
-                    <option value="table-1">Table 1</option>
-                    <option value="table-2" disabled>Table 2 (Future Expansion)</option>
-                    <option value="table-3" disabled>Table 3 (Future Expansion)</option>
-                    <option value="table-4" disabled>Table 4 (Future Expansion)</option>
-                </select>
-                <button onclick="viewOccupancy()">Refresh</button>
+    <main class="flex-1 w-full py-16 px-4 md:px-8">
+        <div id="fade-content" class="w-full max-w-5xl mx-auto fade-content space-y-14">
+            <!-- Dashboard Heading -->
+            <div class="flex flex-col items-center py-6">
+                <div class="flex items-center gap-6 mb-3">
+                    <span class="h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-300 via-pink-200 to-pink-300 shadow-xl">
+                        <i data-lucide="settings" class="w-9 h-9 text-indigo-800"></i>
+                    </span>
+                    <span>
+                        <h1 class="text-5xl font-black tracking-tight text-indigo-900 leading-tight">Admin Dashboard</h1>
+                        <div class="h-1 w-28 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
+                    </span>
+                </div>
+                <p class="text-xl text-slate-600 mt-4 font-medium max-w-xl text-center">Full control over the UMak RFID Login System</p>
             </div>
-            <div id="occupancyData"></div>
-        </div>
 
-        <!-- Current Noise Level -->
-        <div class="admin-section">
-            <h2>Current Noise Level</h2>
-            <div class="filter-group">
-                <label for="noiseTableSelect">Select Table:</label>
-                <select id="noiseTableSelect" onchange="viewNoiseLevel()" class="table-select">
-                    <option value="table-1">Table 1</option>
-                    <option value="table-2" disabled>Table 2 (Future Expansion)</option>
-                    <option value="table-3" disabled>Table 3 (Future Expansion)</option>
-                    <option value="table-4" disabled>Table 4 (Future Expansion)</option>
-                </select>
-                <button onclick="viewNoiseLevel()">Refresh</button>
-            </div>
-            <div id="noiseData"></div>
+            <!-- Stats Card -->
+            <section class="card-fadein card-lift bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl mb-6 border-2 border-indigo-200 max-w-3xl mx-auto transition-all">
+                <div class="flex items-center gap-5 mb-8 pl-3">
+                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
+                        <i data-lucide="bar-chart-3" class="w-7 h-7 text-indigo-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-black tracking-wide text-indigo-800">System Statistics</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-6">
+                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black bg-gradient-to-r from-indigo-600 to-pink-400 bg-clip-text text-transparent" id="totalUsers">-</div>
+                        <div class="text-xs text-gray-500 mt-2">Total Users</div>
+                    </div>
+                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black bg-gradient-to-r from-green-500 to-indigo-500 bg-clip-text text-transparent" id="totalRfid">-</div>
+                        <div class="text-xs text-gray-500 mt-2">RFID Cards</div>
+                    </div>
+                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black bg-gradient-to-r from-pink-600 to-indigo-400 bg-clip-text text-transparent" id="occupiedSeats">-</div>
+                        <div class="text-xs text-gray-500 mt-2">Occupied Seats</div>
+                    </div>
+                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black bg-gradient-to-r from-pink-500 to-indigo-800 bg-clip-text text-transparent" id="pendingReports">-</div>
+                        <div class="text-xs text-gray-500 mt-2">Pending Reports</div>
+                    </div>
+                </div>
+                <div class="flex justify-center"><button class="mt-4 px-7 py-3 rounded-2xl text-base bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-semibold shadow-lg flex items-center transition-all"><i data-lucide='refresh-cw' class='inline w-6 h-6 mr-2'></i>Refresh Stats</button></div>
+            </section>
+
+            <!-- Occupancy Card -->
+            <section class="card-fadein card-lift bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-emerald-200 max-w-3xl mx-auto p-0 transition-all">
+                <div class="flex items-center gap-5 mb-7 pl-3 pt-10">
+                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-emerald-100 shadow"><i data-lucide="chairs" class="w-7 h-7 text-emerald-800"></i></span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-emerald-900">Seat Occupancy</h2>
+                </div>
+                <div class="h-1 w-16 rounded-full bg-gradient-to-r from-emerald-400 to-indigo-400 ml-3 mb-7"></div>
+                <div class="flex flex-col sm:flex-row gap-5 filter-group px-6 mb-7 pb-3 flex-wrap">
+                    <label for="occupancyTableSelect" class="sr-only">Select Table</label>
+                    <select id="occupancyTableSelect" onchange="viewOccupancy()" class="table-select p-3 rounded-lg border border-gray-300 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 outline-none transition">
+                        <option value="table-1">Table 1</option>
+                        <option value="table-2" disabled>Table 2 (Future Expansion)</option>
+                        <option value="table-3" disabled>Table 3 (Future Expansion)</option>
+                        <option value="table-4" disabled>Table 4 (Future Expansion)</option>
+                    </select>
+                    <button onclick="viewOccupancy()" class="px-7 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-400 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-6 h-6 mr-2"></i>Refresh</button>
+                </div>
+                <div class="px-8 pb-10" id="occupancyData"></div>
+            </section>
+
+            <!-- Noise Card -->
+            <section class="card-fadein card-lift bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 max-w-3xl mx-auto p-0 transition-all">
+                <div class="flex items-center gap-5 mb-7 pl-3 pt-10">
+                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-pink-100 shadow"><i data-lucide="volume-2" class="w-7 h-7 text-pink-800"></i></span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-900">Current Noise Level</h2>
+                </div>
+                <div class="h-1 w-16 rounded-full bg-gradient-to-r from-pink-400 to-indigo-400 ml-3 mb-7"></div>
+                <div class="flex flex-col sm:flex-row gap-5 filter-group px-6 mb-7 pb-3 flex-wrap">
+                    <label for="noiseTableSelect" class="sr-only">Select Table</label>
+                    <select id="noiseTableSelect" onchange="viewNoiseLevel()" class="table-select p-3 rounded-lg border border-gray-300 focus:border-pink-700 focus:ring-2 focus:ring-pink-100 outline-none transition">
+                        <option value="table-1">Table 1</option>
+                        <option value="table-2" disabled>Table 2 (Future Expansion)</option>
+                        <option value="table-3" disabled>Table 3 (Future Expansion)</option>
+                        <option value="table-4" disabled>Table 4 (Future Expansion)</option>
+                    </select>
+                    <button onclick="viewNoiseLevel()" class="px-7 py-3 rounded-2xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-6 h-6 mr-2"></i>Refresh</button>
+                </div>
+                <div class="px-8 pb-10" id="noiseData"></div>
+            </section>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - Admin Dashboard</p>
+    <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
+        <p class="mb-1">University of Makati - RFID Login System • Admin Dashboard</p>
+        <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="scripts/setup.js"></script>
-
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="scripts/login-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/setup.js"></script>
 </body>
 </html>

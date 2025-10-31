@@ -3,70 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Login - RFID System</title>
+    <title>University of Makati - RFID Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles/login.css">
+    <style>
+      [data-page="login"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="login"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="login"] .text-indigo-600{color:#0e163e !important}
+      [data-page="login"] .hover\:text-indigo-700:hover{color:#121c54 !important}
+      [data-page="login"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="login"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="login"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="login"] .header-trigger-icon{color:#0e163e !important}
+      [data-page="login"] .bg-gradient-to-br{background:linear-gradient(135deg,#0e163e 0%,#121c54 100%) !important}
+    </style>
 </head>
-<body>
-    <header>
-        <h1>Student Portal</h1>
-    </header>
+<body class="text-slate-900 min-h-screen flex flex-col relative" data-page="login">
+    <div id="library-background" class="library-background" aria-hidden="true"></div>
+    <div id="paper-background" class="paper-background" aria-hidden="true"></div>
+    <div id="background-spotlight" class="background-spotlight" aria-hidden="true"></div>
 
-    <main>
-        <div id="loginForm">
-            <h2>Login</h2>
-            <form id="login">
-                <label for="email">Email:</label>
-                <input type="email" id="email" required>
-                
-                <label for="password">Password:</label>
-                <input type="password" id="password" required>
-                
-                <button type="submit">Login</button>
-            </form>
-            
-            <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
-            <div style="text-align:center;margin:20px 0;">
-                <a href="directions.html" style="color:#007bff;text-decoration:none;font-weight:bold;font-size:1.1em;">
-                    📚 How to Use - Complete Guide
-                </a>
-            </div>
-            <div id="loginError"></div>
+    <!-- Header Trigger Button (Peek Arrow) -->
+    <button id="headerTrigger" class="header-trigger" aria-label="Toggle header navigation">
+        <svg class="header-trigger-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </button>
+
+    <!-- Hover Label -->
+    <div id="navLabel" class="nav-label"></div>
+
+    <!-- Modern Top Navigation Bar (Collapsible) -->
+    <nav id="headerNav" class="modern-sidebar header-collapsed">
+        <!-- Brand/Logo -->
+        <div class="sidebar-brand">
+            <img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" />
         </div>
 
-        <div id="signupForm" style="display:none;">
-            <h2>Sign Up</h2>
-            <form id="signup">
-                <label for="signupEmail">Email:</label>
-                <input type="email" id="signupEmail" required>
-                
-                <label for="signupFirst">First Name:</label>
-                <input type="text" id="signupFirst" required>
-                
-                <label for="signupLast">Last Name:</label>
-                <input type="text" id="signupLast" required>
-                
-                <label for="signupPassword">Password:</label>
-                <input type="password" id="signupPassword" required>
-                
-                <button type="submit">Create Account</button>
-            </form>
-            
-            <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
-            <div style="text-align:center;margin:20px 0;">
-                <a href="directions.html" style="color:#007bff;text-decoration:none;font-weight:bold;font-size:1.1em;">
-                    📚 How to Use - Complete Guide
-                </a>
+        <!-- Navigation Items -->
+        <a href="login.html" class="sidebar-nav-item active" data-label="Login" aria-label="Login">
+            <i data-lucide="home" class="sidebar-icon"></i>
+        </a>
+
+        <a href="register.html" class="sidebar-nav-item" data-label="Register" aria-label="Register">
+            <i data-lucide="user-plus" class="sidebar-icon"></i>
+        </a>
+
+        <a href="directions.html" class="sidebar-nav-item" data-label="How To / Help" aria-label="How To / Help">
+            <i data-lucide="book-open" class="sidebar-icon"></i>
+        </a>
+    </nav>
+
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header">
+            <img src="images/UMak_Logo_Registered.png" alt="UMak Logo" />
+            <div class="mobile-menu-title">Navigation</div>
+        </div>
+
+        <a href="login.html" class="mobile-nav-item active">
+            <i data-lucide="home" class="mobile-nav-icon"></i>
+            <span>Login</span>
+        </a>
+
+        <a href="register.html" class="mobile-nav-item">
+            <i data-lucide="user-plus" class="mobile-nav-icon"></i>
+            <span>Register</span>
+        </a>
+
+        <a href="directions.html" class="mobile-nav-item">
+            <i data-lucide="book-open" class="mobile-nav-icon"></i>
+            <span>How To / Help</span>
+        </a>
+    </div>
+
+    <main class="main-with-sidebar flex-1 flex items-center justify-center py-12 px-6">
+        <div id="fade-content" class="w-full max-w-6xl fade-content">
+            <div id="glassmorphic-container" class="glassmorphic-container bg-white rounded-2xl shadow overflow-hidden">
+                <!-- LOGIN FORM -->
+                <div id="loginForm" class="grid grid-cols-1 md:grid-cols-2">
+                    <!-- Left: Login form -->
+                    <div class="p-8">
+                        <h1 class="text-4xl font-bold mb-2">Welcome Back</h1>
+                        <p class="text-sm text-slate-500 mb-6">Sign in to your account to continue</p>
+
+                        <!-- Status Messages -->
+                        <div id="login-error" class="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg p-3 hidden"></div>
+                        <div id="login-success" class="mb-4 text-sm text-green-600 bg-green-50 border border-green-100 rounded-lg p-3 hidden"></div>
+
+                        <form id="login" class="space-y-4" novalidate>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                                <input id="email" type="email" autocomplete="email"
+                                    class="w-full p-3 rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition"
+                                    placeholder="your.email@umak.edu.ph" required />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                                <input id="password" type="password" autocomplete="current-password"
+                                    class="w-full p-3 rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition"
+                                    placeholder="Enter your password" required />
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" class="rounded" />
+                                    <span>Remember me</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <button type="submit"
+                                    class="w-full py-3 rounded-lg font-semibold login-submit-btn disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Sign In
+                                </button>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <a href="change-pass.html" class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                                    <i data-lucide="lock" class="w-4 h-4"></i>
+                                    Change Password
+                                </a>
+                            </div>
+                        </form>
+
+                        <div class="mt-6 text-center">
+                            <p class="text-sm text-slate-500">
+                                Don't have an account?
+                                <a href="register.html" class="text-indigo-600 hover:text-indigo-700 font-medium">Sign up here</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Dynamic wallpaper panel -->
+                    <div class="relative h-full min-h-[360px]">
+                        <div class="absolute inset-0 overflow-hidden rounded-none md:rounded-l-2xl bg-gradient-to-br from-blue-500 to-purple-600">
+                            <div class="absolute inset-0 bg-black/20"></div>
+                        </div>
+                        <div class="relative z-[1] h-full flex items-end justify-between p-6">
+                            <div class="text-white drop-shadow-md">
+                                <h2 class="text-xl font-semibold !text-white">University of Makati</h2>
+                                <p class="text-sm opacity-90">Noise Comfort Index</p>
+                            </div>
+                            <a href="directions.html"
+                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/15 border border-white/15 text-white text-sm hover:bg-white/25 transition">
+                                <i data-lucide="book-open" class="h-4 w-4"></i>
+                                How to use
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="signupError"></div>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - Student Portal</p>
+    <footer class="footer-glass py-4 text-center text-sm">
+        <p>University of Makati - Noise Comfort Index</p>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="scripts/login.js"></script>
-
+    <script src="scripts/login-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/login.js"></script>
 </body>
 </html>

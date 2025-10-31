@@ -4,93 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LCD Messages - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
     <link rel="stylesheet" href="styles/lcd-messages.css">
+    <style>
+      .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
+      [data-page="lcd-messages"] .nav-label { left: 250px; right: auto; top: 25px; z-index: 99999; }
+    </style>
 </head>
-<body>
-    <nav class="lcd-nav">
-        <ul>
-            <li><a href="setup.html">Admin Dashboard</a></li>
-            <li><a href="user-management.html">User Management</a></li>
-            <li><a href="rfid-management.html">RFID Management</a></li>
-            <li><a href="student-reports.html">Student Reports</a></li>
-            <li><a href="activity-logs.html">Activity Logs</a></li>
-            <li><a href="lcd-messages.html" class="active">LCD Messages</a></li>
-            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
-        </ul>
+<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="lcd-messages">
+    <!-- Visual Effects -->
+    <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
+    <div id="library-background" class="library-background" aria-hidden="true"></div>
+    <div id="paper-background" class="paper-background" aria-hidden="true"></div>
+
+    <!-- Modern Admin Sidebar/Header -->
+    <button id="headerTrigger" class="header-trigger" aria-label="Toggle header navigation">
+        <svg class="header-trigger-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div id="navLabel" class="nav-label"></div>
+    <nav id="headerNav" class="modern-sidebar header-collapsed">
+        <div class="sidebar-brand"><img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" /></div>
+        <a href="setup.html" class="sidebar-nav-item" data-label="Admin Dashboard" aria-label="Admin Dashboard"><i data-lucide="settings" class="sidebar-icon"></i></a>
+        <a href="user-management.html" class="sidebar-nav-item" data-label="User Management" aria-label="User Management"><i data-lucide="users" class="sidebar-icon"></i></a>
+        <a href="rfid-management.html" class="sidebar-nav-item" data-label="RFID Management" aria-label="RFID Management"><i data-lucide="contact" class="sidebar-icon"></i></a>
+        <a href="student-reports.html" class="sidebar-nav-item" data-label="Student Reports" aria-label="Student Reports"><i data-lucide="book-open-check" class="sidebar-icon"></i></a>
+        <a href="activity-logs.html" class="sidebar-nav-item" data-label="Activity Logs" aria-label="Activity Logs"><i data-lucide="list" class="sidebar-icon"></i></a>
+        <a href="lcd-messages.html" class="sidebar-nav-item active" data-label="LCD Messages" aria-label="LCD Messages"><i data-lucide="tv" class="sidebar-icon"></i></a>
+        <a href="#" onclick="logout(); return false;" class="sidebar-nav-item" data-label="Logout" aria-label="Logout"><i data-lucide="log-out" class="sidebar-icon"></i></a>
     </nav>
 
-    <main>
-        <h1 class="page-title">LCD Message Control</h1>
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header"><img src="images/UMak_Logo_Registered.png" alt="UMak Logo" /><div class="mobile-menu-title">Admin Navigation</div></div>
+        <a href="setup.html" class="mobile-nav-item"><i data-lucide="settings" class="mobile-nav-icon"></i><span>Dashboard</span></a>
+        <a href="user-management.html" class="mobile-nav-item"><i data-lucide="users" class="mobile-nav-icon"></i><span>User Management</span></a>
+        <a href="rfid-management.html" class="mobile-nav-item"><i data-lucide="contact" class="mobile-nav-icon"></i><span>RFID Management</span></a>
+        <a href="student-reports.html" class="mobile-nav-item"><i data-lucide="book-open-check" class="mobile-nav-icon"></i><span>Student Reports</span></a>
+        <a href="activity-logs.html" class="mobile-nav-item"><i data-lucide="list" class="mobile-nav-icon"></i><span>Activity Logs</span></a>
+        <a href="lcd-messages.html" class="mobile-nav-item active"><i data-lucide="tv" class="mobile-nav-icon"></i><span>LCD Messages</span></a>
+        <a href="#" onclick="logout(); return false;" class="mobile-nav-item"><i data-lucide="log-out" class="mobile-nav-icon"></i><span>Logout</span></a>
+    </div>
 
-        <div class="admin-section">
-            <h2>Send Message to LCD Screen</h2>
-            <p>Type a message below to display on the ESP32 LCD screen (20 characters per line, 4 lines).</p>
-            
-            <form id="messageForm" class="message-form">
-                <div class="form-group">
-                    <label for="tableSelect" class="form-label">Select Table:</label>
-                    <select id="tableSelect" class="table-select">
-                        <option value="table-1">Table 1</option>
-                        <option value="table-2" disabled>Table 2 (Future Expansion)</option>
-                        <option value="table-3" disabled>Table 3 (Future Expansion)</option>
-                        <option value="table-4" disabled>Table 4 (Future Expansion)</option>
-                    </select>
+    <main class="flex-1 w-full py-16 px-4 md:px-8">
+        <div id="fade-content" class="w-full max-w-5xl mx-auto fade-content space-y-12">
+            <div class="flex flex-col items-center py-5">
+                <div class="flex items-center gap-5 mb-3">
+                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
+                        <i data-lucide="tv" class="w-8 h-8 text-indigo-800"></i>
+                    </span>
+                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">LCD Message Control</h1>
                 </div>
-                
-                <div class="form-group">
-                    <label for="messageInput" class="form-label">Message (max 80 characters, 4 lines):</label>
-                    <textarea id="messageInput" placeholder="Enter your message here...&#10;Example:&#10;Welcome to Lab!&#10;Please maintain&#10;quiet environment" maxlength="80"></textarea>
-                    <div class="character-count">
-                        <span id="charCount">0</span> / 80 characters
+                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
+            </div>
+
+            <!-- Send Message Card -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-indigo-200 p-10">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-indigo-100 shadow">
+                        <i data-lucide="send" class="w-6 h-6 text-indigo-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-indigo-800">Send Message to LCD Screen</h2>
+                </div>
+                <p class="text-slate-600 mb-6">Type a message below to display on the ESP32 LCD screen (20 characters per line, 4 lines).</p>
+                <form id="messageForm" class="message-form">
+                    <div class="form-group">
+                        <label for="tableSelect" class="form-label">Select Table:</label>
+                        <select id="tableSelect" class="table-select">
+                            <option value="table-1">Table 1</option>
+                            <option value="table-2" disabled>Table 2 (Future Expansion)</option>
+                            <option value="table-3" disabled>Table 3 (Future Expansion)</option>
+                            <option value="table-4" disabled>Table 4 (Future Expansion)</option>
+                        </select>
                     </div>
-                </div>
-                
-                <div class="checkbox-group">
-                    <label>
-                        <input type="checkbox" id="priorityCheck">
-                        Priority (display immediately, override current screen)
-                    </label>
-                </div>
-                
-                <div class="checkbox-group">
-                    <label>
-                        <input type="number" id="displayDuration" value="10" min="1" max="300" class="duration-input">
-                        Display Duration (seconds, 1-300)
-                    </label>
-                </div>
-                
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">Send to LCD</button>
-                    <button type="button" onclick="clearMessage()" class="btn btn-secondary">Clear Message</button>
-                </div>
-            </form>
-            
-            <div id="messagePreview" class="message-preview hidden">
-                <div class="preview-label">LCD Preview (20 chars × 4 lines):</div>
-                <div id="previewContent"></div>
-            </div>
-            
-            <div id="messageStatus" class="message-status hidden"></div>
-        </div>
 
-        <div class="admin-section">
-            <h2>Recent Messages</h2>
-            <div id="messageList" class="message-list">
-                <p>Loading messages...</p>
-            </div>
-            <button onclick="loadMessages()" class="refresh-btn">Refresh</button>
+                    <div class="form-group">
+                        <label for="messageInput" class="form-label">Message (max 80 characters, 4 lines):</label>
+                        <textarea id="messageInput" placeholder="Enter your message here...&#10;Example:&#10;Welcome to Lab!&#10;Please maintain&#10;quiet environment" maxlength="80"></textarea>
+                        <div class="character-count"><span id="charCount">0</span> / 80 characters</div>
+                    </div>
+
+                    <div class="checkbox-group"><label><input type="checkbox" id="priorityCheck"> Priority (display immediately, override current screen)</label></div>
+
+                    <div class="checkbox-group"><label><input type="number" id="displayDuration" value="10" min="1" max="300" class="duration-input"> Display Duration (seconds, 1-300)</label></div>
+
+                    <div class="button-group flex gap-3 flex-wrap">
+                        <button type="submit" class="btn btn-primary">Send to LCD</button>
+                        <button type="button" onclick="clearMessage()" class="btn btn-secondary">Clear Message</button>
+                    </div>
+                </form>
+
+                <div id="messagePreview" class="message-preview hidden">
+                    <div class="preview-label">LCD Preview (20 chars × 4 lines):</div>
+                    <div id="previewContent"></div>
+                </div>
+
+                <div id="messageStatus" class="message-status hidden"></div>
+            </section>
+
+            <!-- Recent Messages Card -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
+                        <i data-lucide="history" class="w-6 h-6 text-pink-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">Recent Messages</h2>
+                </div>
+                <div id="messageList" class="message-list"><p>Loading messages...</p></div>
+                <div class="mt-4 flex justify-end"><button onclick="loadMessages()" class="refresh-btn">Refresh</button></div>
+            </section>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - LCD Message Control</p>
+    <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
+        <p class="mb-1">University of Makati - RFID Login System • LCD Messages</p>
+        <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="scripts/lcd-messages.js"></script>
-
+    <script src="scripts/login-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/lcd-messages.js"></script>
 </body>
 </html>
 

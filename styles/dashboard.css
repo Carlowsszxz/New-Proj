@@ -1,0 +1,93 @@
+/* Dashboard-specific styles */
+
+/* Quick Actions Buttons - Sliding Background Effect */
+.quick-action-btn {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 2px solid;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    isolation: isolate;
+    font-weight: 500;
+}
+
+/* Default colors for each button type */
+.quick-action-btn[data-color="indigo"] {
+    color: #0e163e;
+    border-color: #0e163e;
+}
+
+.quick-action-btn[data-color="slate"] {
+    color: #1e293b;
+    border-color: #1e293b;
+}
+
+.quick-action-btn[data-color="emerald"] {
+    color: #059669;
+    border-color: #059669;
+}
+
+.quick-action-btn[data-color="rose"] {
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Sliding background effect */
+.quick-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    border-radius: 0.5rem;
+    pointer-events: none;
+}
+
+/* Background colors for each button type on hover */
+.quick-action-btn[data-color="indigo"]::before {
+    background: linear-gradient(135deg, #0e163e 0%, #121c54 100%);
+}
+
+.quick-action-btn[data-color="slate"]::before {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.quick-action-btn[data-color="emerald"]::before {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+.quick-action-btn[data-color="rose"]::before {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+}
+
+.quick-action-btn:hover::before {
+    width: 100%;
+    transform-origin: right center;
+}
+
+.quick-action-btn:hover {
+    background: transparent !important;
+    color: white !important;
+    border-color: transparent;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 0 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure text and icons stay above background */
+.quick-action-btn > *,
+.quick-action-btn i,
+.quick-action-btn svg {
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.quick-action-btn:hover i,
+.quick-action-btn:hover svg,
+.quick-action-btn:hover > * {
+    color: white !important;
+}
+

@@ -3,308 +3,432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How to Use - Student Portal Guide</title>
+    <title>How to Use - University of Makati Library</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/directions.css">
+    <style>
+      [data-page="directions"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="directions"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="directions"] .text-indigo-600{color:#0e163e !important}
+      [data-page="directions"] .hover\:text-indigo-700:hover{color:#121c54 !important}
+      [data-page="directions"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="directions"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="directions"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="directions"] .header-trigger-icon{color:#0e163e !important}
+      /* Additional tasteful accents */
+      [data-page="directions"] header h1{color:#0e163e !important}
+      [data-page="directions"] .guide-section h2{color:#0e163e !important}
+      [data-page="directions"] .feature-card h4{color:#0e163e !important}
+      [data-page="directions"] .toc-list a{color:#0e163e !important}
+      [data-page="directions"] .toc-list a:hover{text-decoration:underline}
+      [data-page="directions"] .step-number{background-color:#0e163e !important;color:#fff !important}
+    </style>
 </head>
-<body>
-    <header>
-        <h1>📚 Student Portal Guide</h1>
-        <p class="guide-header-subtitle">Complete instructions for using the RFID Login System</p>
-    </header>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen" data-page="directions">
 
-    <main class="guide-container">
-        <!-- Table of Contents -->
-        <div class="guide-section">
-            <h2>📋 Table of Contents</h2>
-            <ol class="toc-list">
-                <li><a href="#registration">Step 1: Creating Your Account</a></li>
-                <li><a href="#login">Step 2: Logging In</a></li>
-                <li><a href="#rfid">Step 3: Setting Up Your RFID Card</a></li>
-                <li><a href="#dashboard">Step 4: Using Your Dashboard</a></li>
-                <li><a href="#map">Step 5: Viewing Seat Map</a></li>
-                <li><a href="#reports">Step 6: Submitting Reports</a></li>
-                <li><a href="#logout">Step 7: Logging Out</a></li>
-                <li><a href="#tips">Helpful Tips & Important Notes</a></li>
-            </ol>
+    <!-- Cursor Follower (Desktop Only) -->
+    <div class="cursor-follower"></div>
+
+    <!-- Library Background with Blur -->
+    <div class="library-background"></div>
+
+    <!-- Paper Texture Overlay -->
+    <div class="paper-background"></div>
+
+    <!-- Header Peek Trigger -->
+    <button class="header-trigger" id="headerTrigger" aria-label="Toggle navigation">
+        <i data-lucide="chevron-down" class="header-trigger-icon w-5 h-5"></i>
+    </button>
+
+    <!-- Top Navigation Bar (Collapsible) -->
+    <nav class="modern-sidebar header-collapsed" id="modernSidebar">
+        <!-- Brand/Logo -->
+        <div class="sidebar-brand">
+            <img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" />
         </div>
 
-        <!-- Step 1: Registration -->
-        <div class="guide-section" id="registration">
-            <h2>Step 1: Creating Your Account</h2>
-            <div class="step">
-                <h3><span class="step-number">1</span>Go to the Sign Up Page</h3>
-                <div class="step-content">
-                    <p>On the login page, you'll see a "Sign up" link below the login form. Click it to access the registration form.</p>
+        <!-- Navigation Items -->
+        <a href="login.html" class="sidebar-nav-item" data-label="Login" aria-label="Login">
+            <i data-lucide="home" class="sidebar-icon"></i>
+        </a>
+
+        <a href="register.html" class="sidebar-nav-item" data-label="Register" aria-label="Register">
+            <i data-lucide="user-plus" class="sidebar-icon"></i>
+        </a>
+
+        <a href="directions.html" class="sidebar-nav-item active" data-label="How To / Help" aria-label="How To / Help">
+            <i data-lucide="book-open" class="sidebar-icon"></i>
+        </a>
+    </nav>
+
+    <!-- Nav Label (Desktop Hover) -->
+    <div class="nav-label" id="navLabel"></div>
+
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header">
+            <img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" />
+            <span class="mobile-menu-title">Navigation</span>
+        </div>
+
+        <a href="login.html" class="mobile-nav-item">
+            <i data-lucide="home" class="mobile-nav-icon"></i>
+            Login
+        </a>
+
+        <a href="register.html" class="mobile-nav-item">
+            <i data-lucide="user-plus" class="mobile-nav-icon"></i>
+            Register
+        </a>
+
+        <a href="directions.html" class="mobile-nav-item active">
+            <i data-lucide="book-open" class="mobile-nav-icon"></i>
+            How To / Help
+        </a>
+    </div>
+
+    <!-- Sticky Table of Contents (outside main for proper fixed positioning) -->
+    <div class="toc-sidebar" id="tocSidebar">
+        <div class="toc-sticky">
+            <h3 class="toc-title">📋 Contents</h3>
+            <nav class="toc-nav">
+                <ol class="toc-list">
+                    <li><a href="#registration" data-section="registration">Step 1: Creating Your Account</a></li>
+                    <li><a href="#login" data-section="login">Step 2: Logging In</a></li>
+                    <li><a href="#rfid" data-section="rfid">Step 3: Setting Up Your RFID Card</a></li>
+                    <li><a href="#dashboard" data-section="dashboard">Step 4: Using Your Dashboard</a></li>
+                    <li><a href="#map" data-section="map">Step 5: Viewing Seat Map</a></li>
+                    <li><a href="#reports" data-section="reports">Step 6: Submitting Reports</a></li>
+                    <li><a href="#logout" data-section="logout">Step 7: Logging Out</a></li>
+                    <li><a href="#tips" data-section="tips">Helpful Tips & Important Notes</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="fade-content main-with-sidebar w-full px-4 sm:px-6 lg:px-8 py-12">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header -->
+            <header class="text-center mb-12">
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+                    📚 Student Portal Guide
+                </h1>
+                <p class="text-lg text-gray-600 font-medium">
+                    Complete instructions for using the RFID Login System
+                </p>
+            </header>
+
+            <div class="guide-container">
+
+            <!-- Step 1: Registration -->
+            <div class="guide-section" id="registration">
+                <h2>Step 1: Creating Your Account</h2>
+                <div class="step">
+                    <h3><span class="step-number">1</span>Go to the Sign Up Page</h3>
+                    <div class="step-content">
+                        <p>On the login page, you'll see a "Sign up" link below the login form. Click it to access the registration form.</p>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">2</span>Fill Out Your Information</h3>
-                <div class="step-content">
-                    <p>Enter the following required information:</p>
-                    <ul>
-                        <li><strong>Email:</strong> Your valid email address (this will be used for login)</li>
-                        <li><strong>First Name:</strong> Your first name</li>
-                        <li><strong>Last Name:</strong> Your last name</li>
-                        <li><strong>Password:</strong> A secure password (remember this for future logins)</li>
-                    </ul>
+                
+                <div class="step">
+                    <h3><span class="step-number">2</span>Fill Out Your Information</h3>
+                    <div class="step-content">
+                        <p>Enter the following required information:</p>
+                        <ul>
+                            <li><strong>Email:</strong> Your valid email address (this will be used for login)</li>
+                            <li><strong>First Name:</strong> Your first name</li>
+                            <li><strong>Last Name:</strong> Your last name</li>
+                            <li><strong>Password:</strong> A secure password (remember this for future logins)</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">3</span>Create Your Account</h3>
-                <div class="step-content">
-                    <p>Click the "Create Account" button to submit your registration.</p>
-                    <div class="highlight-box">
-                        <strong>⚠️ Important:</strong> After creating your account, check your email inbox for a confirmation email. You must confirm your email address before you can log in.
+                
+                <div class="step">
+                    <h3><span class="step-number">3</span>Create Your Account</h3>
+                    <div class="step-content">
+                        <p>Click the "Create Account" button to submit your registration.</p>
+                        <div class="highlight-box">
+                            <strong>⚠️ Important:</strong> After creating your account, check your email inbox for a confirmation email. You must confirm your email address before you can log in.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Step 2: Login -->
-        <div class="guide-section" id="login">
-            <h2>Step 2: Logging In</h2>
-            <div class="step">
-                <h3><span class="step-number">1</span>Enter Your Credentials</h3>
-                <div class="step-content">
-                    <p>On the login page, enter:</p>
-                    <ul>
-                        <li>Your registered email address</li>
-                        <li>Your password</li>
-                    </ul>
+            <!-- Step 2: Login -->
+            <div class="guide-section" id="login">
+                <h2>Step 2: Logging In</h2>
+                <div class="step">
+                    <h3><span class="step-number">1</span>Enter Your Credentials</h3>
+                    <div class="step-content">
+                        <p>On the login page, enter:</p>
+                        <ul>
+                            <li>Your registered email address</li>
+                            <li>Your password</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">2</span>Click Login</h3>
-                <div class="step-content">
-                    <p>Click the "Login" button. If your credentials are correct and your email is confirmed, you'll be redirected to your Dashboard.</p>
-                    <div class="warning-box">
-                        <strong>❗ If login fails:</strong> Make sure you've confirmed your email address. Check your spam folder if you didn't receive the confirmation email.
+                
+                <div class="step">
+                    <h3><span class="step-number">2</span>Click Login</h3>
+                    <div class="step-content">
+                        <p>Click the "Login" button. If your credentials are correct and your email is confirmed, you'll be redirected to your Dashboard.</p>
+                        <div class="warning-box">
+                            <strong>❗ If login fails:</strong> Make sure you've confirmed your email address. Check your spam folder if you didn't receive the confirmation email.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Step 3: RFID Setup -->
-        <div class="guide-section" id="rfid">
-            <h2>Step 3: Setting Up Your RFID Card</h2>
-            <div class="step">
-                <h3><span class="step-number">1</span>Access the RFID Reader</h3>
-                <div class="step-content">
-                    <p>Go to the physical RFID reader at your table/lab location.</p>
+            <!-- Step 3: RFID Setup -->
+            <div class="guide-section" id="rfid">
+                <h2>Step 3: Setting Up Your RFID Card</h2>
+                <div class="step">
+                    <h3><span class="step-number">1</span>Access the RFID Reader</h3>
+                    <div class="step-content">
+                        <p>Go to the physical RFID reader at your table/lab location.</p>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">2</span>Tap Your RFID Card</h3>
-                <div class="step-content">
-                    <p>Tap your RFID card on the reader. The LCD screen will display your unique RFID Card ID (it will look something like: <code>93B12CDA</code>).</p>
-                    <div class="highlight-box">
-                        <strong>📝 Write it down:</strong> The RFID ID will be displayed on the LCD screen. Make sure to copy it exactly as shown (it's case-sensitive!).
+                
+                <div class="step">
+                    <h3><span class="step-number">2</span>Tap Your RFID Card</h3>
+                    <div class="step-content">
+                        <p>Tap your RFID card on the reader. The LCD screen will display your unique RFID Card ID (it will look something like: <code>93B12CDA</code>).</p>
+                        <div class="highlight-box">
+                            <strong>📝 Write it down:</strong> The RFID ID will be displayed on the LCD screen. Make sure to copy it exactly as shown (it's case-sensitive!).
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3><span class="step-number">3</span>Assign Your RFID Card in Dashboard</h3>
+                    <div class="step-content">
+                        <p>After logging into your Dashboard, you'll see an "Assign Your RFID Card" section. Follow these steps:</p>
+                        <ul>
+                            <li>Enter the exact RFID Card ID you copied from the LCD screen</li>
+                            <li>Make sure to copy-paste it exactly (it's case-sensitive)</li>
+                            <li>Click "Assign RFID Card"</li>
+                        </ul>
+                        <div class="warning-box">
+                            <strong>⚠️ Note:</strong> You only need to do this once. After assignment, you can use your RFID card to log in and out at the physical reader.
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="step">
-                <h3><span class="step-number">3</span>Assign Your RFID Card in Dashboard</h3>
-                <div class="step-content">
-                    <p>After logging into your Dashboard, you'll see an "Assign Your RFID Card" section. Follow these steps:</p>
-                    <ul>
-                        <li>Enter the exact RFID Card ID you copied from the LCD screen</li>
-                        <li>Make sure to copy-paste it exactly (it's case-sensitive)</li>
-                        <li>Click "Assign RFID Card"</li>
-                    </ul>
-                    <div class="warning-box">
-                        <strong>⚠️ Note:</strong> You only need to do this once. After assignment, you can use your RFID card to log in and out at the physical reader.
+
+            <!-- Step 4: Dashboard -->
+            <div class="guide-section" id="dashboard">
+                <h2>Step 4: Using Your Dashboard</h2>
+                <p>The Dashboard is your main hub where you can see your current status and navigate to other sections.</p>
+                
+                <div class="step">
+                    <h3><span class="step-number">1</span>Navigation Bar</h3>
+                    <div class="step-content">
+                        <p>At the top of the page, you'll find a navigation bar with three options:</p>
+                        <ul>
+                            <li><strong>Dashboard:</strong> Your main page (current page)</li>
+                            <li><strong>Seat Map:</strong> View available seats</li>
+                            <li><strong>Reports:</strong> Submit reports or issues</li>
+                            <li><strong>Logout:</strong> End your session (located on the right)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3><span class="step-number">2</span>Your Status Section</h3>
+                    <div class="step-content">
+                        <p>After assigning your RFID card, you'll see:</p>
+                        <ul>
+                            <li><strong>Your Status:</strong> Shows whether you're currently logged in via RFID (green) or logged out (red)</li>
+                            <li><strong>Your Seat:</strong> Shows which seat you're currently occupying (e.g., "Table 1, Seat 2 - OCCUPIED")</li>
+                            <li><strong>Current Noise Level:</strong> Displays the real-time noise level at your table</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3><span class="step-number">3</span>Using RFID at the Physical Reader</h3>
+                    <div class="step-content">
+                        <p>Once your RFID card is assigned:</p>
+                        <ul>
+                            <li><strong>To Log In:</strong> Tap your RFID card on the reader when you arrive</li>
+                            <li><strong>To Log Out:</strong> Tap your RFID card again when you leave</li>
+                            <li>The system will automatically assign you an available seat</li>
+                            <li>Your status on the Dashboard will update in real-time</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Step 4: Dashboard -->
-        <div class="guide-section" id="dashboard">
-            <h2>Step 4: Using Your Dashboard</h2>
-            <p>The Dashboard is your main hub where you can see your current status and navigate to other sections.</p>
-            
-            <div class="step">
-                <h3><span class="step-number">1</span>Navigation Bar</h3>
-                <div class="step-content">
-                    <p>At the top of the page, you'll find a navigation bar with three options:</p>
-                    <ul>
-                        <li><strong>Dashboard:</strong> Your main page (current page)</li>
-                        <li><strong>Seat Map:</strong> View available seats</li>
-                        <li><strong>Reports:</strong> Submit reports or issues</li>
-                        <li><strong>Logout:</strong> End your session (located on the right)</li>
-                    </ul>
+            <!-- Step 5: Seat Map -->
+            <div class="guide-section" id="map">
+                <h2>Step 5: Viewing Seat Map</h2>
+                <div class="step">
+                    <h3><span class="step-number">1</span>Access the Seat Map</h3>
+                    <div class="step-content">
+                        <p>Click "Seat Map" in the navigation bar to see the current occupancy status of all seats.</p>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">2</span>Your Status Section</h3>
-                <div class="step-content">
-                    <p>After assigning your RFID card, you'll see:</p>
-                    <ul>
-                        <li><strong>Your Status:</strong> Shows whether you're currently logged in via RFID (green) or logged out (red)</li>
-                        <li><strong>Your Seat:</strong> Shows which seat you're currently occupying (e.g., "Table 1, Seat 2 - OCCUPIED")</li>
-                        <li><strong>Current Noise Level:</strong> Displays the real-time noise level at your table</li>
-                    </ul>
+                
+                <div class="step">
+                    <h3><span class="step-number">2</span>Understanding the Map</h3>
+                    <div class="step-content">
+                        <ul>
+                            <li><strong>🟢 Green (Occupied):</strong> Seats that are currently taken</li>
+                            <li><strong>⚫ Gray (Available):</strong> Seats that are free</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">3</span>Using RFID at the Physical Reader</h3>
-                <div class="step-content">
-                    <p>Once your RFID card is assigned:</p>
-                    <ul>
-                        <li><strong>To Log In:</strong> Tap your RFID card on the reader when you arrive</li>
-                        <li><strong>To Log Out:</strong> Tap your RFID card again when you leave</li>
-                        <li>The system will automatically assign you an available seat</li>
-                        <li>Your status on the Dashboard will update in real-time</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 5: Seat Map -->
-        <div class="guide-section" id="map">
-            <h2>Step 5: Viewing Seat Map</h2>
-            <div class="step">
-                <h3><span class="step-number">1</span>Access the Seat Map</h3>
-                <div class="step-content">
-                    <p>Click "Seat Map" in the navigation bar to see the current occupancy status of all seats.</p>
-                </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">2</span>Understanding the Map</h3>
-                <div class="step-content">
-                    <ul>
-                        <li><strong>🟢 Green (Occupied):</strong> Seats that are currently taken</li>
-                        <li><strong>⚫ Gray (Available):</strong> Seats that are free</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">3</span>View Full Map</h3>
-                <div class="step-content">
-                    <p>Click the "🗺️ View Full Map" button to see the complete floor plan in a larger view.</p>
-                    <p>The map refreshes automatically every 5 seconds to show the latest seat availability.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 6: Reports -->
-        <div class="guide-section" id="reports">
-            <h2>Step 6: Submitting Reports</h2>
-            <div class="step">
-                <h3><span class="step-number">1</span>Navigate to Reports</h3>
-                <div class="step-content">
-                    <p>Click "Reports" in the navigation bar to access the reports section.</p>
-                </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">2</span>Submit a Report</h3>
-                <div class="step-content">
-                    <p>Fill out the report form:</p>
-                    <ul>
-                        <li><strong>Report Type:</strong> Select "Issue", "Suggestion", or "Feedback"</li>
-                        <li><strong>Title:</strong> Give your report a brief title</li>
-                        <li><strong>Description:</strong> Provide detailed information about your report</li>
-                    </ul>
-                    <p>Click "Submit Report" when done.</p>
-                </div>
-            </div>
-            
-            <div class="step">
-                <h3><span class="step-number">3</span>View Your Reports</h3>
-                <div class="step-content">
-                    <p>Scroll down to see "My Submitted Reports" where you can:</p>
-                    <ul>
-                        <li>View all reports you've submitted</li>
-                        <li>See the status of each report (Pending, Reviewing, Resolved)</li>
-                        <li>Read admin replies if your report has been responded to</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 7: Logout -->
-        <div class="guide-section" id="logout">
-            <h2>Step 7: Logging Out</h2>
-            <div class="step">
-                <h3><span class="step-number">1</span>Always Use the Logout Button</h3>
-                <div class="step-content">
-                    <p>When you're finished, click the "Logout" button in the top-right corner of the navigation bar.</p>
-                    <div class="warning-box">
-                        <strong>⚠️ Important:</strong> You must use the Logout button to properly end your session. Simply closing the browser tab or navigating away is not recommended and may show a warning message.
+                
+                <div class="step">
+                    <h3><span class="step-number">3</span>View Full Map</h3>
+                    <div class="step-content">
+                        <p>Click the "🗺️ View Full Map" button to see the complete floor plan in a larger view.</p>
+                        <p>The map refreshes automatically every 5 seconds to show the latest seat availability.</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="step">
-                <h3><span class="step-number">2</span>RFID Logout</h3>
-                <div class="step-content">
-                    <p>If you're logged in via RFID at the physical reader, make sure to tap your card again before leaving to log out and free up your seat.</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Tips Section -->
-        <div class="guide-section" id="tips">
-            <h2>💡 Helpful Tips & Important Notes</h2>
-            
-            <div class="feature-list">
-                <div class="feature-card">
-                    <h4>✅ Stay Within Student Pages</h4>
-                    <p>You can freely navigate between Dashboard, Seat Map, and Reports. The system will prevent you from accessing admin pages or returning to login without logging out.</p>
+            <!-- Step 6: Reports -->
+            <div class="guide-section" id="reports">
+                <h2>Step 6: Submitting Reports</h2>
+                <div class="step">
+                    <h3><span class="step-number">1</span>Navigate to Reports</h3>
+                    <div class="step-content">
+                        <p>Click "Reports" in the navigation bar to access the reports section.</p>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <h4>📧 Email Confirmation</h4>
-                    <p>Always check your email after registration. You cannot log in until you confirm your email address via the link sent to you.</p>
+                <div class="step">
+                    <h3><span class="step-number">2</span>Submit a Report</h3>
+                    <div class="step-content">
+                        <p>Fill out the report form:</p>
+                        <ul>
+                            <li><strong>Report Type:</strong> Select "Issue", "Suggestion", or "Feedback"</li>
+                            <li><strong>Title:</strong> Give your report a brief title</li>
+                            <li><strong>Description:</strong> Provide detailed information about your report</li>
+                        </ul>
+                        <p>Click "Submit Report" when done.</p>
+                    </div>
                 </div>
                 
-                <div class="feature-card">
-                    <h4>🔐 RFID Card ID</h4>
-                    <p>Your RFID Card ID is case-sensitive! Make sure to copy it exactly as shown on the LCD screen, or use copy-paste for accuracy.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h4>🪑 Automatic Seat Assignment</h4>
-                    <p>When you tap your RFID card to log in, the system automatically assigns you the first available seat. You don't need to choose.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h4>🔔 Noise Level Monitoring</h4>
-                    <p>The system monitors noise levels in real-time. If noise gets too high, warnings will appear on the LCD screen at your table.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h4>🚪 Proper Logout</h4>
-                    <p>Always use the Logout button. This ensures your seat is freed up for other students and your session is properly ended.</p>
+                <div class="step">
+                    <h3><span class="step-number">3</span>View Your Reports</h3>
+                    <div class="step-content">
+                        <p>Scroll down to see "My Submitted Reports" where you can:</p>
+                        <ul>
+                            <li>View all reports you've submitted</li>
+                            <li>See the status of each report (Pending, Reviewing, Resolved)</li>
+                            <li>Read admin replies if your report has been responded to</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            
-            <div class="highlight-box highlight-box-margin">
-                <strong>❓ Need Help?</strong> If you encounter any issues or have questions, contact your lab administrator or submit a report through the Reports section.
-            </div>
-        </div>
 
-        <!-- Navigation Link -->
-        <div class="nav-link">
-            <a href="login.html">← Back to Login</a>
+            <!-- Step 7: Logout -->
+            <div class="guide-section" id="logout">
+                <h2>Step 7: Logging Out</h2>
+                <div class="step">
+                    <h3><span class="step-number">1</span>Always Use the Logout Button</h3>
+                    <div class="step-content">
+                        <p>When you're finished, click the "Logout" button in the top-right corner of the navigation bar.</p>
+                        <div class="warning-box">
+                            <strong>⚠️ Important:</strong> You must use the Logout button to properly end your session. Simply closing the browser tab or navigating away is not recommended and may show a warning message.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3><span class="step-number">2</span>RFID Logout</h3>
+                    <div class="step-content">
+                        <p>If you're logged in via RFID at the physical reader, make sure to tap your card again before leaving to log out and free up your seat.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="guide-section" id="tips">
+                <h2>💡 Helpful Tips & Important Notes</h2>
+                
+                <div class="feature-list">
+                    <div class="feature-card">
+                        <h4>✅ Stay Within Student Pages</h4>
+                        <p>You can freely navigate between Dashboard, Seat Map, and Reports. The system will prevent you from accessing admin pages or returning to login without logging out.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>📧 Email Confirmation</h4>
+                        <p>Always check your email after registration. You cannot log in until you confirm your email address via the link sent to you.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>🔐 RFID Card ID</h4>
+                        <p>Your RFID Card ID is case-sensitive! Make sure to copy it exactly as shown on the LCD screen, or use copy-paste for accuracy.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>🪑 Automatic Seat Assignment</h4>
+                        <p>When you tap your RFID card to log in, the system automatically assigns you the first available seat. You don't need to choose.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>🔔 Noise Level Monitoring</h4>
+                        <p>The system monitors noise levels in real-time. If noise gets too high, warnings will appear on the LCD screen at your table.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>🚪 Proper Logout</h4>
+                        <p>Always use the Logout button. This ensures your seat is freed up for other students and your session is properly ended.</p>
+                    </div>
+                </div>
+                
+                <div class="highlight-box highlight-box-margin">
+                    <strong>❓ Need Help?</strong> If you encounter any issues or have questions, contact your lab administrator or submit a report through the Reports section.
+                </div>
+            </div>
+
+            <!-- Navigation Link -->
+            <div class="nav-link">
+                <a href="login.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back to Login
+                </a>
+            </div>
+            </div>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - Student Portal Guide</p>
+    <!-- Footer with Glassmorphic Effect -->
+    <footer class="footer-glass py-6 text-center mt-12">
+        <p class="text-sm">
+            University of Makati - RFID Login System<br>
+            Student Portal Guide © 2025
+        </p>
     </footer>
 
+    <script src="scripts/directions.js"></script>
 </body>
 </html>
-

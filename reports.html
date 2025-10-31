@@ -3,70 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Reports - RFID System</title>
+    <title>Reports - University of Makati</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="scripts/reports-ui.js"></script>
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/reports.css">
+    <style>
+      [data-page="reports"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="reports"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="reports"] .text-indigo-600{color:#0e163e !important}
+      [data-page="reports"] .text-indigo-700{color:#0e163e !important}
+      [data-page="reports"] .hover\:text-indigo-800:hover{color:#121c54 !important}
+      [data-page="reports"] .bg-indigo-100{background-color:rgba(14,22,62,.10) !important}
+      [data-page="reports"] .text-indigo-800{color:#0e163e !important}
+      [data-page="reports"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="reports"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="reports"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="reports"] .header-trigger-icon{color:#0e163e !important}
+    </style>
 </head>
-<body>
-    <nav style="background:#333;color:white;padding:10px 20px;margin-bottom:20px;">
-        <ul style="list-style:none;padding:0;margin:0;display:flex;gap:20px;">
-            <li><a href="dashboard.html" style="color:white;text-decoration:none;">Dashboard</a></li>
-            <li><a href="map.html" style="color:white;text-decoration:none;">Seat Map</a></li>
-            <li><a href="reports.html" style="color:#ffd700;text-decoration:underline;">Reports</a></li>
-            <li style="margin-left:auto;"><button onclick="logout()" style="background:#dc3545;color:white;border:none;padding:5px 15px;border-radius:3px;cursor:pointer;">Logout</button></li>
-        </ul>
-    </nav>
+<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="reports">
+    <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
+    <div id="library-background" class="library-background" aria-hidden="true"></div>
+    <div id="paper-background" class="paper-background" aria-hidden="true"></div>
 
-    <main>
-        <h1 style="text-align:center;">Submit a Report</h1>
-        
-        <div id="reportFormSection">
-            <h2>New Report</h2>
-            <form id="reportForm" onsubmit="event.preventDefault(); submitReport();">
-                <div>
-                    <label for="reportType">Report Type:</label>
-                    <select id="reportType" required>
-                        <option value="">Select a type...</option>
-                        <option value="issue">Issue</option>
-                        <option value="feedback">Feedback</option>
-                        <option value="complaint">Complaint</option>
-                        <option value="suggestion">Suggestion</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label for="reportTitle">Title:</label>
-                    <input type="text" id="reportTitle" placeholder="Brief summary of your report" required>
-                </div>
-                
-                <div>
-                    <label for="reportDescription">Description:</label>
-                    <textarea id="reportDescription" rows="5" placeholder="Provide detailed information about your report..." required></textarea>
-                </div>
-                
-                <button type="submit">Submit Report</button>
-                <div id="reportError" style="color:red;margin-top:10px;"></div>
-                <div id="reportSuccess" style="color:green;margin-top:10px;"></div>
-            </form>
+    <!-- Header Trigger Button (Peek Arrow) -->
+    <button id="headerTrigger" class="header-trigger" aria-label="Toggle header navigation">
+        <svg class="header-trigger-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    </button>
+
+    <!-- Hover Label -->
+    <div id="navLabel" class="nav-label"></div>
+
+    <!-- Modern Top Navigation Bar (Collapsible) -->
+    <nav id="headerNav" class="modern-sidebar header-collapsed">
+        <!-- Brand/Logo -->
+        <div class="sidebar-brand">
+            <img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" />
         </div>
 
-        <div id="myReportsSection">
-            <h2>My Submitted Reports</h2>
-            <button id="refreshBtn" onclick="loadMyReports()">Refresh</button>
-            <div id="reportsList" class="activity-list">
-                <p>Loading...</p>
+        <!-- Navigation Items -->
+        <a href="dashboard.html" class="sidebar-nav-item" data-label="Dashboard" aria-label="Dashboard">
+            <i data-lucide="layout-dashboard" class="sidebar-icon"></i>
+        </a>
+
+        <a href="map.html" class="sidebar-nav-item" data-label="Seat Map" aria-label="Seat Map">
+            <i data-lucide="map" class="sidebar-icon"></i>
+        </a>
+
+        <a href="reports.html" class="sidebar-nav-item active" data-label="Reports" aria-label="Reports">
+            <i data-lucide="file-text" class="sidebar-icon"></i>
+        </a>
+
+        <a href="#" onclick="logout(); return false;" class="sidebar-nav-item" data-label="Logout" aria-label="Logout">
+            <i data-lucide="log-out" class="sidebar-icon"></i>
+        </a>
+    </nav>
+
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header">
+            <img src="images/UMak_Logo_Registered.png" alt="UMak Logo" />
+            <div class="mobile-menu-title">Student Portal</div>
+        </div>
+
+        <a href="dashboard.html" class="mobile-nav-item">
+            <i data-lucide="layout-dashboard" class="mobile-nav-icon"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="map.html" class="mobile-nav-item">
+            <i data-lucide="map" class="mobile-nav-icon"></i>
+            <span>Seat Map</span>
+        </a>
+
+        <a href="reports.html" class="mobile-nav-item active">
+            <i data-lucide="file-text" class="mobile-nav-icon"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="#" onclick="logout(); return false;" class="mobile-nav-item">
+            <i data-lucide="log-out" class="mobile-nav-icon"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+    <main class="main-with-sidebar flex-1 w-full px-4 sm:px-6 lg:px-8 py-12">
+        <div class="fade-content max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column: Submit Report -->
+                <div class="space-y-6">
+                    <div class="bg-white/85 backdrop-blur-md rounded-2xl shadow-lg p-8 border border-white/30">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">Submit a Report</h1>
+                        <p class="text-gray-600 mb-6">Report issues, give feedback, or make suggestions</p>
+                        
+                        <!-- Quick Templates -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Quick Templates:</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                <button type="button" onclick="useTemplate('noise')" 
+                                    class="template-btn flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" data-template="noise">
+                                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                                    Noise
+                                </button>
+                                <button type="button" onclick="useTemplate('lights')" 
+                                    class="template-btn flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" data-template="lights">
+                                    <i data-lucide="lightbulb" class="w-4 h-4"></i>
+                                    Lights
+                                </button>
+                                <button type="button" onclick="useTemplate('ac')" 
+                                    class="template-btn flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" data-template="ac">
+                                    <i data-lucide="thermometer" class="w-4 h-4"></i>
+                                    AC/Temp
+                                </button>
+                                <button type="button" onclick="useTemplate('furniture')" 
+                                    class="template-btn flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" data-template="furniture">
+                                    <i data-lucide="armchair" class="w-4 h-4"></i>
+                                    Furniture
+                                </button>
+                                <button type="button" onclick="useTemplate('wifi')" 
+                                    class="template-btn flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" data-template="wifi">
+                                    <i data-lucide="wifi" class="w-4 h-4"></i>
+                                    WiFi
+                                </button>
+                                <button type="button" onclick="useTemplate('cleaning')" 
+                                    class="template-btn flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" data-template="cleaning">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    Cleaning
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <form id="reportForm" onsubmit="event.preventDefault(); submitReport();" class="space-y-4">
+                            <div>
+                                <label for="reportType" class="block text-sm font-medium text-gray-700 mb-2">Report Type:</label>
+                                <select id="reportType" required
+                                    class="w-full p-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition">
+                                    <option value="">Select a type...</option>
+                                    <option value="issue">Issue</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="complaint">Complaint</option>
+                                    <option value="suggestion">Suggestion</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="reportTitle" class="block text-sm font-medium text-gray-700 mb-2">Title:</label>
+                                <input type="text" id="reportTitle" placeholder="Brief summary of your report" required
+                                    class="w-full p-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition">
+                            </div>
+                            
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label for="reportDescription" class="block text-sm font-medium text-gray-700">Description:</label>
+                                    <span id="charCount" class="text-xs text-gray-500">0/500</span>
+                                </div>
+                                <textarea id="reportDescription" rows="5" maxlength="500" placeholder="Provide detailed information about your report..." required
+                                    class="w-full p-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition resize-none"></textarea>
+                                <p class="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                                    <i data-lucide="info" class="w-3 h-3"></i>
+                                    <span>Tip: Include location, time, and what you expected to happen</span>
+                                </p>
+                            </div>
+                            
+                            <button type="submit" class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span class="flex items-center justify-center gap-2">
+                                    <i data-lucide="send" class="w-4 h-4"></i>
+                                    Submit Report
+                                </span>
+                            </button>
+                            <div id="reportError" class="text-sm text-red-600 hidden"></div>
+                            <div id="reportSuccess" class="text-sm text-green-600 hidden"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column: My Reports -->
+                <div class="space-y-6">
+                    <!-- Statistics Card -->
+                    <div id="reportStats" class="bg-white/85 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-white/30">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-600"></i>
+                            Your Reports Summary
+                        </h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-center p-3 rounded-lg bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200">
+                                <div id="totalCount" class="text-2xl font-bold text-gray-900">0</div>
+                                <div class="text-xs text-gray-600 mt-1">Total</div>
+                            </div>
+                            <div class="text-center p-3 rounded-lg bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200">
+                                <div id="pendingCount" class="text-2xl font-bold text-amber-700">0</div>
+                                <div class="text-xs text-gray-600 mt-1">Pending</div>
+                            </div>
+                            <div class="text-center p-3 rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200">
+                                <div id="resolvedCount" class="text-2xl font-bold text-green-700">0</div>
+                                <div class="text-xs text-gray-600 mt-1">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reports List -->
+                    <div class="bg-white/85 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-white/30">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-xl font-bold text-gray-900">My Reports</h2>
+                                <!-- Tab Switcher -->
+                                <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                                    <button id="tabMyReports" onclick="switchToMyReports()" 
+                                        class="px-4 py-1.5 rounded-md text-sm font-medium transition-all tab-button active">
+                                        My Reports
+                                    </button>
+                                    <button id="tabAllReports" onclick="switchToAllReports()" 
+                                        class="px-4 py-1.5 rounded-md text-sm font-medium transition-all tab-button">
+                                        Show All Reports
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="refreshBtn" onclick="refreshReports()" 
+                                class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-700 font-medium rounded-lg hover:bg-indigo-200 transition text-sm">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                Refresh
+                            </button>
+                        </div>
+
+                        <!-- Filter & Sort -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <select id="filterStatus" onchange="applyFilters()" title="Filter reports by status"
+                                class="px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                                <option value="all">All Reports</option>
+                                <option value="pending">Pending</option>
+                                <option value="reviewing">Reviewing</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="dismissed">Dismissed</option>
+                            </select>
+                            <select id="sortBy" onchange="applyFilters()" title="Sort reports"
+                                class="px-3 py-2 text-sm rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="status">By Status</option>
+                            </select>
+                        </div>
+
+                        <div id="reportsList" class="space-y-4 reports-list-scrollable">
+                            <p class="text-gray-500 text-center py-8">Loading...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - Reports</p>
+    <footer class="footer-glass py-4 text-center text-sm">
+        <p>University of Makati - RFID Login System</p>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="scripts/reports.js"></script>
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            
+            // Fade in content
+            setTimeout(() => {
+                const fadeContent = document.querySelector('.fade-content');
+                if (fadeContent) fadeContent.classList.add('is-visible');
+            }, 100);
+        });
 
+        // Cursor follower effect
+        const cursorFollower = document.getElementById('cursor-follower');
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorFollower.style.opacity = '1';
+        });
+
+        function animateCursor() {
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+            cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px) translate(-50%, -50%)`;
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Header trigger functionality
+        const headerTrigger = document.getElementById('headerTrigger');
+        const headerNav = document.getElementById('headerNav');
+        let headerExpanded = false;
+
+        headerTrigger.addEventListener('click', () => {
+            headerExpanded = !headerExpanded;
+            
+            if (headerExpanded) {
+                headerTrigger.classList.add('header-expanded', 'trigger-expanded');
+                headerNav.classList.remove('header-collapsed');
+                headerNav.classList.add('header-expanded');
+            } else {
+                headerTrigger.classList.remove('header-expanded', 'trigger-expanded');
+                headerNav.classList.remove('header-expanded');
+                headerNav.classList.add('header-collapsed');
+            }
+        });
+
+        // Mobile burger menu
+        const burgerBtn = document.getElementById('burgerMenuBtn');
+        const mobileOverlay = document.getElementById('mobileMenuOverlay');
+        const mobilePanel = document.getElementById('mobileMenuPanel');
+
+        burgerBtn.addEventListener('click', () => {
+            burgerBtn.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            mobilePanel.classList.toggle('active');
+        });
+
+        mobileOverlay.addEventListener('click', () => {
+            burgerBtn.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            mobilePanel.classList.remove('active');
+        });
+
+        // Navigation item hover labels
+        const navItems = document.querySelectorAll('.sidebar-nav-item');
+        const navLabel = document.getElementById('navLabel');
+
+        navItems.forEach(item => {
+            item.addEventListener('mouseenter', (e) => {
+                const label = e.currentTarget.getAttribute('data-label');
+                navLabel.textContent = label;
+                navLabel.classList.add('visible');
+            });
+
+            item.addEventListener('mouseleave', () => {
+                navLabel.classList.remove('visible');
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/reports.js"></script>
 </body>
 </html>
-

@@ -1,208 +1,387 @@
-.stat-card {
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    padding: 15px;
-    margin: 10px 0;
-}
-
-.stat-label {
-    font-weight: bold;
-    color: #666;
-    font-size: 0.9em;
-}
-
-.stat-value {
-    font-size: 1.5em;
-    color: #333;
-    margin-top: 5px;
-}
-
-.stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.activity-list {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.activity-item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.activity-item:hover {
-    background: #f5f5f5;
-}
-
-#refreshBtn {
-    margin: 20px 0;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-table th, table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-table th {
-    background: #333;
-    color: white;
-}
-
-/* Report Form Styles */
-#reportFormSection {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
-}
-
-#reportForm div {
-    margin-bottom: 15px;
-}
-
-#reportForm label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-#reportForm input[type="text"],
-#reportForm select,
-#reportForm textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1em;
-    box-sizing: border-box;
-}
-
-#reportForm textarea {
-    resize: vertical;
-    font-family: inherit;
-}
-
-#reportForm button[type="submit"] {
-    background: #28a745;
-    color: white;
-    padding: 10px 30px;
-    border: none;
-    border-radius: 4px;
+/* Quick Template Buttons - Sliding Background Effect */
+.template-btn {
     cursor: pointer;
-    font-size: 1em;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 2px solid;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    isolation: isolate;
+    font-weight: 500;
 }
 
-#reportForm button[type="submit"]:hover {
-    background: #218838;
+/* Default colors for each template button */
+.template-btn[data-template="noise"] {
+    color: #dc2626;
+    border-color: #dc2626;
 }
 
-/* Report Card Styles */
-.report-card {
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 15px;
+.template-btn[data-template="noise"] i,
+.template-btn[data-template="noise"] svg {
+    color: #dc2626;
 }
 
-.report-header {
-    display: flex;
-    justify-content: space-between;
+.template-btn[data-template="lights"] {
+    color: #ca8a04;
+    border-color: #ca8a04;
+}
+
+.template-btn[data-template="lights"] i,
+.template-btn[data-template="lights"] svg {
+    color: #ca8a04;
+}
+
+.template-btn[data-template="ac"] {
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+.template-btn[data-template="ac"] i,
+.template-btn[data-template="ac"] svg {
+    color: #2563eb;
+}
+
+.template-btn[data-template="furniture"] {
+    color: #9333ea;
+    border-color: #9333ea;
+}
+
+.template-btn[data-template="furniture"] i,
+.template-btn[data-template="furniture"] svg {
+    color: #9333ea;
+}
+
+.template-btn[data-template="wifi"] {
+    color: #16a34a;
+    border-color: #16a34a;
+}
+
+.template-btn[data-template="wifi"] i,
+.template-btn[data-template="wifi"] svg {
+    color: #16a34a;
+}
+
+.template-btn[data-template="cleaning"] {
+    color: #14b8a6;
+    border-color: #14b8a6;
+}
+
+.template-btn[data-template="cleaning"] i,
+.template-btn[data-template="cleaning"] svg {
+    color: #14b8a6;
+}
+
+/* Sliding background effect */
+.template-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    border-radius: 0.5rem;
+    pointer-events: none;
+}
+
+/* Background colors for each template button on hover */
+.template-btn[data-template="noise"]::before {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+}
+
+.template-btn[data-template="lights"]::before {
+    background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%);
+}
+
+.template-btn[data-template="ac"]::before {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+}
+
+.template-btn[data-template="furniture"]::before {
+    background: linear-gradient(135deg, #9333ea 0%, #a855f7 100%);
+}
+
+.template-btn[data-template="wifi"]::before {
+    background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+}
+
+.template-btn[data-template="cleaning"]::before {
+    background: linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%);
+}
+
+.template-btn:hover::before {
+    width: 100%;
+    transform-origin: right center;
+}
+
+.template-btn:hover {
+    background: transparent !important;
+    color: white !important;
+    border-color: transparent;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 0 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure text and icons stay above background */
+.template-btn > *,
+.template-btn i,
+.template-btn svg {
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.template-btn:hover i,
+.template-btn:hover svg,
+.template-btn:hover > * {
+    color: white !important;
+}
+
+.template-btn:active {
+    transform: scale(0.98);
+}
+
+/* Report Status Badges */
+.report-status-badge {
+    display: inline-flex;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
-.report-type {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 0.85em;
-    font-weight: bold;
+.report-status-badge.status-pending {
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    color: #92400E;
 }
 
-.report-type.issue {
-    background: #ffc107;
-    color: #333;
+.report-status-badge.status-reviewing {
+    background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+    color: #1E40AF;
 }
 
-.report-type.feedback {
-    background: #17a2b8;
-    color: white;
+.report-status-badge.status-resolved {
+    background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+    color: #065F46;
 }
 
-.report-type.complaint {
-    background: #dc3545;
-    color: white;
+.report-status-badge.status-dismissed {
+    background: linear-gradient(135deg, #F3F4F6, #E5E7EB);
+    color: #374151;
 }
 
-.report-type.suggestion {
-    background: #28a745;
-    color: white;
+/* Responsive Grid Adjustments */
+@media (max-width: 768px) {
+    .grid.lg\\:grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
 }
 
-.report-type.other {
-    background: #6c757d;
-    color: white;
+/* Smooth transitions for collapsible content */
+#reportDescription {
+    transition: all 0.3s ease;
 }
 
-.report-status {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 0.85em;
-    font-weight: bold;
+/* Submit Report Button - Sliding Background Effect */
+button[type="submit"] {
+    position: relative;
+    overflow: hidden;
+    background: transparent !important;
+    isolation: isolate;
 }
 
-.report-status.pending {
-    background: #ffc107;
-    color: #333;
+button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(135deg, #0e163e 0%, #121c54 100%);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    border-radius: 0.5rem;
+    pointer-events: none;
 }
 
-.report-status.reviewing {
-    background: #17a2b8;
-    color: white;
+button[type="submit"]:hover::before {
+    width: 100%;
+    transform-origin: right center;
 }
 
-.report-status.resolved {
-    background: #28a745;
-    color: white;
+button[type="submit"] > * {
+    position: relative;
+    z-index: 10 !important;
 }
 
-.report-status.dismissed {
-    background: #6c757d;
-    color: white;
+button[type="submit"] span,
+button[type="submit"] i,
+button[type="submit"] svg {
+    position: relative;
+    z-index: 10 !important;
+    transition: color 0.3s ease;
 }
 
-.report-title {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-bottom: 8px;
-    color: #333;
+button[type="submit"]:hover {
+    background: transparent !important;
+    color: white !important;
 }
 
-.report-description {
-    color: #666;
-    margin-bottom: 8px;
-    white-space: pre-wrap;
+button[type="submit"]:hover i,
+button[type="submit"]:hover svg,
+button[type="submit"]:hover span,
+button[type="submit"]:hover > * {
+    color: white !important;
 }
 
-.report-date {
-    font-size: 0.85em;
-    color: #999;
+/* Refresh Button - Sliding Background Effect */
+#refreshBtn {
+    position: relative;
+    overflow: hidden;
+    background: transparent !important;
+    isolation: isolate;
 }
+
+#refreshBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(135deg, #0e163e 0%, #121c54 100%);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    border-radius: 0.5rem;
+    pointer-events: none;
+}
+
+#refreshBtn:hover::before {
+    width: 100%;
+    transform-origin: right center;
+}
+
+#refreshBtn > * {
+    position: relative;
+    z-index: 10 !important;
+}
+
+#refreshBtn i,
+#refreshBtn svg {
+    position: relative;
+    z-index: 10 !important;
+    transition: color 0.3s ease;
+}
+
+#refreshBtn:hover {
+    background: transparent !important;
+    color: white !important;
+}
+
+#refreshBtn:hover i,
+#refreshBtn:hover svg,
+#refreshBtn:hover > * {
+    color: white !important;
+}
+
+/* Loading spinner on refresh button */
+#refreshBtn:active i {
+    animation: spin 1s linear;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+    .template-btn {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+    
+    .report-status-badge {
+        font-size: 0.625rem;
+        padding: 4px 8px;
+    }
+}
+
+/* Hidden utility class */
+.hidden {
+    display: none;
+}
+
+/* Tab Switcher Styles */
+.tab-button {
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+    color: #0e163e;
+}
+
+.tab-button.active {
+    color: #0e163e;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+}
+
+/* Scrollable Reports List */
+.reports-list-scrollable {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    margin-right: -8px;
+}
+
+/* Custom Scrollbar Styling */
+.reports-list-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.reports-list-scrollable::-webkit-scrollbar-track {
+    background: rgba(14, 22, 62, 0.05);
+    border-radius: 10px;
+}
+
+.reports-list-scrollable::-webkit-scrollbar-thumb {
+    background: rgba(14, 22, 62, 0.2);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.reports-list-scrollable::-webkit-scrollbar-thumb:hover {
+    background: rgba(14, 22, 62, 0.35);
+}
+
+/* Firefox Scrollbar */
+.reports-list-scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(14, 22, 62, 0.2) rgba(14, 22, 62, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .reports-list-scrollable {
+        max-height: 500px;
+    }
+}
+
+@media (max-height: 800px) {
+    .reports-list-scrollable {
+        max-height: 400px;
+    }
+}
+
 

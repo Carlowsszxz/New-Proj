@@ -45,6 +45,8 @@ async function addUser() {
     const email = document.getElementById('userEmail').value.trim();
     const firstName = document.getElementById('userFirstName').value.trim();
     const lastName = document.getElementById('userLastName').value.trim();
+    const studentId = document.getElementById('userStudentId').value.trim();
+    const department = document.getElementById('userDepartment').value;
     const password = document.getElementById('userPassword').value;
     const makeAdmin = document.getElementById('makeAdmin').checked;
     
@@ -69,7 +71,9 @@ async function addUser() {
             options: {
                 data: {
                     first_name: firstName,
-                    last_name: lastName
+                    last_name: lastName,
+                    student_id: studentId,
+                    college_department: department
                 },
                 emailRedirectTo: window.location.origin + '/login.html'
             }
@@ -97,6 +101,8 @@ async function addUser() {
                 email: email,
                 first_name: firstName,
                 last_name: lastName,
+                student_id: studentId || null,
+                college_department: department || null,
                 is_admin: makeAdmin || false,
                 password: password  // Store password for legacy compatibility
             }, {
@@ -127,6 +133,8 @@ async function addUser() {
         document.getElementById('userEmail').value = '';
         document.getElementById('userFirstName').value = '';
         document.getElementById('userLastName').value = '';
+        document.getElementById('userStudentId').value = '';
+        document.getElementById('userDepartment').value = '';
         document.getElementById('userPassword').value = '';
         document.getElementById('makeAdmin').checked = false;
         

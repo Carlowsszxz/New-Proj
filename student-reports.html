@@ -4,138 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Reports - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
     <link rel="stylesheet" href="styles/student-reports.css">
+    <style>
+      .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
+      [data-page="student-reports"] .nav-label { left: 250px; right: auto; top: 25px; z-index: 99999; }
+    </style>
 </head>
-<body>
-    <nav class="student-reports-nav">
-        <ul>
-            <li><a href="setup.html">Admin Dashboard</a></li>
-            <li><a href="user-management.html">User Management</a></li>
-            <li><a href="rfid-management.html">RFID Management</a></li>
-            <li><a href="student-reports.html" class="active">Student Reports</a></li>
-            <li><a href="activity-logs.html">Activity Logs</a></li>
-            <li><a href="lcd-messages.html">LCD Messages</a></li>
-            <li class="nav-spacer"><button onclick="logout()">Logout</button></li>
-        </ul>
+<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="student-reports">
+    <!-- Visual Effects -->
+    <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
+    <div id="library-background" class="library-background" aria-hidden="true"></div>
+    <div id="paper-background" class="paper-background" aria-hidden="true"></div>
+
+    <!-- Modern Admin Sidebar/Header -->
+    <button id="headerTrigger" class="header-trigger" aria-label="Toggle header navigation">
+        <svg class="header-trigger-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div id="navLabel" class="nav-label"></div>
+    <nav id="headerNav" class="modern-sidebar header-collapsed">
+        <div class="sidebar-brand"><img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" /></div>
+        <a href="setup.html" class="sidebar-nav-item" data-label="Admin Dashboard" aria-label="Admin Dashboard"><i data-lucide="settings" class="sidebar-icon"></i></a>
+        <a href="user-management.html" class="sidebar-nav-item" data-label="User Management" aria-label="User Management"><i data-lucide="users" class="sidebar-icon"></i></a>
+        <a href="rfid-management.html" class="sidebar-nav-item" data-label="RFID Management" aria-label="RFID Management"><i data-lucide="contact" class="sidebar-icon"></i></a>
+        <a href="student-reports.html" class="sidebar-nav-item active" data-label="Student Reports" aria-label="Student Reports"><i data-lucide="book-open-check" class="sidebar-icon"></i></a>
+        <a href="activity-logs.html" class="sidebar-nav-item" data-label="Activity Logs" aria-label="Activity Logs"><i data-lucide="list" class="sidebar-icon"></i></a>
+        <a href="lcd-messages.html" class="sidebar-nav-item" data-label="LCD Messages" aria-label="LCD Messages"><i data-lucide="tv" class="sidebar-icon"></i></a>
+        <a href="#" onclick="logout(); return false;" class="sidebar-nav-item" data-label="Logout" aria-label="Logout"><i data-lucide="log-out" class="sidebar-icon"></i></a>
     </nav>
 
-    <main>
-        <h1 class="page-title">Student Reports</h1>
+    <!-- Burger Menu Button (Mobile Only) -->
+    <button class="burger-menu-btn" id="burgerMenuBtn" aria-label="Toggle menu">
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+        <span class="burger-line"></span>
+    </button>
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu-panel" id="mobileMenuPanel">
+        <div class="mobile-menu-header"><img src="images/UMak_Logo_Registered.png" alt="UMak Logo" /><div class="mobile-menu-title">Admin Navigation</div></div>
+        <a href="setup.html" class="mobile-nav-item"><i data-lucide="settings" class="mobile-nav-icon"></i><span>Dashboard</span></a>
+        <a href="user-management.html" class="mobile-nav-item"><i data-lucide="users" class="mobile-nav-icon"></i><span>User Management</span></a>
+        <a href="rfid-management.html" class="mobile-nav-item"><i data-lucide="contact" class="mobile-nav-icon"></i><span>RFID Management</span></a>
+        <a href="student-reports.html" class="mobile-nav-item active"><i data-lucide="book-open-check" class="mobile-nav-icon"></i><span>Student Reports</span></a>
+        <a href="activity-logs.html" class="mobile-nav-item"><i data-lucide="list" class="mobile-nav-icon"></i><span>Activity Logs</span></a>
+        <a href="lcd-messages.html" class="mobile-nav-item"><i data-lucide="tv" class="mobile-nav-icon"></i><span>LCD Messages</span></a>
+        <a href="#" onclick="logout(); return false;" class="mobile-nav-item"><i data-lucide="log-out" class="mobile-nav-icon"></i><span>Logout</span></a>
+    </div>
 
-        <!-- Statistics Summary -->
-        <div class="admin-section">
-            <h2>Reports Summary</h2>
-            <div class="stats-summary" id="statsSummary">
-                <div class="stat-card stat-pending">
-                    <div class="stat-number" id="statPending">-</div>
-                    <div class="stat-label">Pending</div>
+    <main class="flex-1 w-full py-16 px-4 md:px-8">
+        <div id="fade-content" class="w-full max-w-5xl mx-auto fade-content space-y-12">
+            <div class="flex flex-col items-center py-5">
+                <div class="flex items-center gap-5 mb-3">
+                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
+                        <i data-lucide="book-open-check" class="w-8 h-8 text-indigo-800"></i>
+                    </span>
+                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">Student Reports</h1>
                 </div>
-                <div class="stat-card stat-reviewing">
-                    <div class="stat-number" id="statReviewing">-</div>
-                    <div class="stat-label">Reviewing</div>
-                </div>
-                <div class="stat-card stat-resolved">
-                    <div class="stat-number" id="statResolved">-</div>
-                    <div class="stat-label">Resolved</div>
-                </div>
-                <div class="stat-card stat-dismissed">
-                    <div class="stat-number" id="statDismissed">-</div>
-                    <div class="stat-label">Dismissed</div>
-                </div>
+                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
             </div>
-        </div>
 
-        <!-- Advanced Search Section -->
-        <div class="admin-section search-section">
-            <button id="searchToggle" class="search-toggle" onclick="toggleSearch()">🔍 Advanced Search</button>
-            
-            <form id="searchForm" class="search-form" onsubmit="event.preventDefault(); performSearch();">
-                <div class="search-form-group">
-                    <label for="searchUser">User (Email):</label>
-                    <input type="text" id="searchUser" placeholder="e.g., user@example.com">
+            <!-- Summary Card -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-indigo-200 p-10">
+                <div class="flex items-center gap-4 mb-7">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-indigo-100 shadow">
+                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-indigo-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-indigo-800">Reports Summary</h2>
                 </div>
-                
-                <div class="search-form-group">
-                    <label for="searchStatus">Status:</label>
-                    <select id="searchStatus">
-                        <option value="">All Statuses</option>
-                        <option value="pending">Pending</option>
-                        <option value="reviewing">Reviewing</option>
-                        <option value="resolved">Resolved</option>
-                        <option value="dismissed">Dismissed</option>
-                    </select>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-5" id="statsSummary">
+                    <div class="text-center p-5 rounded-xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200">
+                        <div id="statPending" class="text-3xl font-bold text-amber-700">-</div>
+                        <div class="text-xs text-gray-600 mt-1">Pending</div>
+                    </div>
+                    <div class="text-center p-5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-indigo-200">
+                        <div id="statReviewing" class="text-3xl font-bold text-indigo-700">-</div>
+                        <div class="text-xs text-gray-600 mt-1">Reviewing</div>
+                    </div>
+                    <div class="text-center p-5 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200">
+                        <div id="statResolved" class="text-3xl font-bold text-emerald-700">-</div>
+                        <div class="text-xs text-gray-600 mt-1">Resolved</div>
+                    </div>
+                    <div class="text-center p-5 rounded-xl bg-gradient-to-br from-slate-50 to-gray-50 border border-gray-200">
+                        <div id="statDismissed" class="text-3xl font-bold text-gray-700">-</div>
+                        <div class="text-xs text-gray-600 mt-1">Dismissed</div>
+                    </div>
                 </div>
-                
-                <div class="search-form-group">
-                    <label for="searchType">Report Type:</label>
-                    <select id="searchType">
-                        <option value="">All Types</option>
-                        <option value="issue">Issue</option>
-                        <option value="feedback">Feedback</option>
-                        <option value="complaint">Complaint</option>
-                        <option value="suggestion">Suggestion</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchDateFrom">From Date/Time:</label>
-                    <input type="datetime-local" id="searchDateFrom">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchDateTo">To Date/Time:</label>
-                    <input type="datetime-local" id="searchDateTo">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchTitle">Title (contains):</label>
-                    <input type="text" id="searchTitle" placeholder="Search in title...">
-                </div>
-                
-                <div class="search-form-group">
-                    <label for="searchHasReply">Has Admin Reply:</label>
-                    <select id="searchHasReply">
-                        <option value="">All Reports</option>
-                        <option value="yes">Has Reply</option>
-                        <option value="no">No Reply</option>
-                    </select>
-                </div>
-                
-                <div class="search-actions">
-                    <button type="submit" class="btn-search">🔍 Search</button>
-                    <button type="button" class="btn-clear" onclick="clearSearch()">🔄 Clear</button>
-                </div>
-            </form>
-        </div>
+            </section>
 
-        <div class="admin-section">
-            <h2>All Student Reports</h2>
-            <div id="searchInfo" class="search-results-info hidden"></div>
-            
-            <!-- Quick Filter Buttons -->
-            <div class="quick-filters">
-                <button class="filter-btn all active" onclick="filterByStatus('')">All Reports</button>
-                <button class="filter-btn pending" onclick="filterByStatus('pending')">Pending</button>
-                <button class="filter-btn reviewing" onclick="filterByStatus('reviewing')">Reviewing</button>
-                <button class="filter-btn resolved" onclick="filterByStatus('resolved')">Resolved</button>
-                <button class="filter-btn dismissed" onclick="filterByStatus('dismissed')">Dismissed</button>
-            </div>
-            
-            <button onclick="viewAllReports()">🔄 Refresh Reports</button>
-            <div id="reportsData">Loading reports...</div>
+            <!-- Advanced Search -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-emerald-200 p-10">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-emerald-100 shadow">
+                        <i data-lucide="search" class="w-6 h-6 text-emerald-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-emerald-800">Advanced Search</h2>
+                    <button id="searchToggle" onclick="toggleSearch()" class="ml-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Toggle</button>
+                </div>
+                <form id="searchForm" class="grid md:grid-cols-2 gap-4" onsubmit="event.preventDefault(); performSearch();">
+                    <div><label for="searchUser" class="block text-sm font-medium text-slate-700 mb-1">User (Email)</label><input type="text" id="searchUser" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., user@example.com"></div>
+                    <div><label for="searchStatus" class="block text-sm font-medium text-slate-700 mb-1">Status</label><select id="searchStatus" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"><option value="">All Statuses</option><option value="pending">Pending</option><option value="reviewing">Reviewing</option><option value="resolved">Resolved</option><option value="dismissed">Dismissed</option></select></div>
+                    <div><label for="searchType" class="block text-sm font-medium text-slate-700 mb-1">Report Type</label><select id="searchType" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"><option value="">All Types</option><option value="issue">Issue</option><option value="feedback">Feedback</option><option value="complaint">Complaint</option><option value="suggestion">Suggestion</option><option value="other">Other</option></select></div>
+                    <div><label for="searchDateFrom" class="block text-sm font-medium text-slate-700 mb-1">From Date/Time</label><input type="datetime-local" id="searchDateFrom" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"></div>
+                    <div><label for="searchDateTo" class="block text-sm font-medium text-slate-700 mb-1">To Date/Time</label><input type="datetime-local" id="searchDateTo" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"></div>
+                    <div><label for="searchTitle" class="block text-sm font-medium text-slate-700 mb-1">Title (contains)</label><input type="text" id="searchTitle" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="Search in title..."></div>
+                    <div><label for="searchHasReply" class="block text-sm font-medium text-slate-700 mb-1">Has Admin Reply</label><select id="searchHasReply" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"><option value="">All Reports</option><option value="yes">Has Reply</option><option value="no">No Reply</option></select></div>
+                    <div class="md:col-span-2 flex gap-3 justify-end mt-2"><button type="submit" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Search</button><button type="button" onclick="clearSearch()" class="px-5 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold shadow">Clear</button></div>
+                </form>
+            </section>
+
+            <!-- All Reports -->
+            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
+                        <i data-lucide="messages-square" class="w-6 h-6 text-pink-700"></i>
+                    </span>
+                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">All Student Reports</h2>
+                    <div id="searchInfo" class="ml-auto text-sm text-slate-600 hidden"></div>
+                </div>
+                <div class="flex flex-wrap gap-3 justify-between items-center mb-4">
+                    <div class="quick-filters flex flex-wrap gap-2">
+                        <button class="filter-btn all active" onclick="filterByStatus('')">All Reports</button>
+                        <button class="filter-btn pending" onclick="filterByStatus('pending')">Pending</button>
+                        <button class="filter-btn reviewing" onclick="filterByStatus('reviewing')">Reviewing</button>
+                        <button class="filter-btn resolved" onclick="filterByStatus('resolved')">Resolved</button>
+                        <button class="filter-btn dismissed" onclick="filterByStatus('dismissed')">Dismissed</button>
+                    </div>
+                    <button onclick="viewAllReports()" class="px-6 py-2.5 rounded-xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh Reports</button>
+                </div>
+                <div id="reportsData">Loading reports...</div>
+            </section>
         </div>
     </main>
 
-    <footer>
-        <p>RFID Login System - Student Reports Management</p>
+    <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
+        <p class="mb-1">University of Makati - RFID Login System • Student Reports</p>
+        <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="scripts/student-reports.js"></script>
-
+    <script src="scripts/login-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/student-reports.js"></script>
 </body>
 </html>
 
