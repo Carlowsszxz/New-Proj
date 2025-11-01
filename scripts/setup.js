@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     loadStats();
     viewOccupancy();
     viewNoiseLevel(); // Load initial noise level for Table 1
+    loadAnnouncements(); // Load announcements
 });
 
 // Load statistics
@@ -52,7 +53,7 @@ async function loadStats() {
             .from('users')
             .select('*', { count: 'exact', head: true });
         
-        // Total RFID cards
+        // Total access devices
         const { count: rfidCount } = await supabase
             .from('rfid_cards')
             .select('*', { count: 'exact', head: true });
@@ -188,7 +189,12 @@ async function loadUsers() {
         
         if (error) throw error;
         
+        // Only populate userSelect if it exists (it might not be on all pages)
         const select = document.getElementById('userSelect');
+        if (!select) {
+            // Silently return - userSelect is optional (not present in setup.html)
+            return;
+        }
         select.innerHTML = '<option value="">Select User...</option>';
         
         data.forEach(user => {
@@ -257,12 +263,12 @@ async function toggleAdmin(userId, userEmail, makeAdmin) {
 }
 
 async function deleteUser(userId, userEmail) {
-    if (!confirm('Are you sure you want to delete user: ' + userEmail + '?\n\nThis will also delete their RFID cards and related data!')) {
+    if (!confirm('Are you sure you want to delete user: ' + userEmail + '?\n\nThis will also delete their access devices and related data!')) {
         return;
     }
     
     try {
-        // Delete RFID cards first (foreign key constraint)
+        // Delete access devices first (foreign key constraint)
         await supabase
             .from('rfid_cards')
             .delete()
@@ -304,7 +310,7 @@ async function assignRfid() {
             .single();
         
         if (existing) {
-            document.getElementById('rfidResult').textContent = '❌ This RFID card is already assigned to another user!';
+            document.getElementById('rfidResult').textContent = '❌ This device is already registered to another user!';
             return;
         }
         
@@ -321,7 +327,7 @@ async function assignRfid() {
         
         if (error) throw error;
         
-        document.getElementById('rfidResult').textContent = 'RFID card assigned! ✅';
+        document.getElementById('rfidResult').textContent = 'Device registered! ✅';
         document.getElementById('rfidUid').value = '';
         loadUsers();
         loadStats();
@@ -371,7 +377,7 @@ async function toggleRfidStatus(rfidId, activate) {
         
         if (error) throw error;
         
-        alert('RFID card status updated! ✅');
+        alert('Device status updated! ✅');
         viewAllRfid();
     } catch (err) {
         alert('Error: ' + err.message);
@@ -1066,4 +1072,224 @@ async function logout() {
     
     // Redirect to login
     window.location.href = 'login.html';
+}
+
+// ========== ANNOUNCEMENTS MANAGEMENT ==========
+
+// Initialize announcement form character counter
+document.addEventListener('DOMContentLoaded', function() {
+    const messageInput = document.getElementById('announcementMessage');
+    if (messageInput) {
+        const charCount = document.getElementById('charCount');
+        messageInput.addEventListener('input', () => {
+            if (charCount) charCount.textContent = messageInput.value.length;
+        });
+    }
+
+    // Announcement form submission
+    const announcementForm = document.getElementById('announcementForm');
+    if (announcementForm) {
+        announcementForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await createAnnouncement();
+        });
+    }
+});
+
+async function loadAnnouncements() {
+    try {
+        const { data: announcements, error } = await supabase
+            .from('announcements')
+            .select('*')
+            .order('is_priority', { ascending: false })
+            .order('created_at', { ascending: false })
+            .limit(20);
+        
+        if (error) throw error;
+        
+        // Filter out expired announcements client-side
+        const data = announcements ? announcements.filter(ann => {
+            if (!ann.expires_at) return true;
+            return new Date(ann.expires_at) > new Date();
+        }) : [];
+
+        const container = document.getElementById('announcementsList');
+        if (!container) return;
+        
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">No announcements yet. Create one above!</p>';
+            return;
+        }
+
+        container.innerHTML = data.map(ann => {
+            const createdAt = new Date(ann.created_at).toLocaleString();
+            const expiresAt = ann.expires_at ? new Date(ann.expires_at).toLocaleString() : null;
+            const isExpired = ann.expires_at ? new Date(ann.expires_at) < new Date() : false;
+
+            return `
+                <div class="p-4 rounded-lg border ${ann.is_priority ? 'border-rose-300 bg-rose-50' : 'border-gray-200 bg-white'} ${isExpired ? 'opacity-60' : ''}">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-semibold ${ann.is_priority ? 'text-rose-700' : 'setup-title-color'}">${escapeHtml(ann.title || 'Untitled')}</h4>
+                                ${ann.is_priority ? '<span class="px-2 py-0.5 text-xs rounded bg-rose-200 text-rose-800 font-medium">Priority</span>' : ''}
+                                ${isExpired ? '<span class="px-2 py-1 text-xs rounded bg-gray-100 text-gray-700">Expired</span>' : ''}
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 whitespace-pre-wrap">${escapeHtml(ann.message || '')}</p>
+                            <div class="text-xs text-gray-500">
+                                Created: ${createdAt}
+                                ${expiresAt ? ` • Expires: ${expiresAt}` : ''}
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="deleteAnnouncement('${ann.id}')" 
+                                    class="px-3 py-1.5 text-xs rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Reinitialize Lucide icons for the new buttons
+        if (window.lucide) {
+            setTimeout(() => lucide.createIcons(), 100);
+        }
+    } catch (err) {
+        console.error('Error loading announcements:', err);
+        const container = document.getElementById('announcementsList');
+        if (container) {
+            container.innerHTML = `<p class="text-red-500 text-sm text-center py-4">Error loading announcements: ${err.message}</p>`;
+        }
+    }
+}
+
+async function createAnnouncement() {
+    const titleInput = document.getElementById('announcementTitle');
+    const messageInput = document.getElementById('announcementMessage');
+    const priorityCheck = document.getElementById('announcementPriority');
+    const expiresInput = document.getElementById('announcementExpires');
+    const resultDiv = document.getElementById('announcementResult');
+
+    if (!titleInput || !messageInput) return;
+
+    const title = titleInput.value.trim();
+    const message = messageInput.value.trim();
+    const isPriority = priorityCheck ? priorityCheck.checked : false;
+    const expiresAt = expiresInput && expiresInput.value ? new Date(expiresInput.value).toISOString() : null;
+
+    if (!title || !message) {
+        if (resultDiv) {
+            resultDiv.innerHTML = '<span class="text-red-600">Please fill in both title and message.</span>';
+        }
+        return;
+    }
+
+    try {
+        // Get current user ID
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) throw new Error('Not authenticated');
+
+        // Verify admin status before creating
+        const { data: user, error: userError } = await supabase
+            .from('users')
+            .select('is_admin')
+            .eq('email', session.user.email)
+            .single();
+
+        if (userError || !user || !user.is_admin) {
+            throw new Error('Admin privileges required');
+        }
+
+        const { data, error } = await supabase
+            .from('announcements')
+            .insert([
+                {
+                    title: title,
+                    message: message,
+                    is_priority: isPriority,
+                    created_by: session.user.id,
+                    expires_at: expiresAt
+                }
+            ])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        if (resultDiv) {
+            resultDiv.innerHTML = '<span class="text-green-600">Announcement posted successfully!</span>';
+        }
+
+        // Clear form
+        clearAnnouncementForm();
+
+        // Reload announcements list
+        setTimeout(() => {
+            loadAnnouncements();
+            if (resultDiv) resultDiv.innerHTML = '';
+        }, 1500);
+    } catch (err) {
+        console.error('Error creating announcement:', err);
+        if (resultDiv) {
+            resultDiv.innerHTML = `<span class="text-red-600">Error: ${err.message}</span>`;
+        }
+    }
+}
+
+function clearAnnouncementForm() {
+    const titleInput = document.getElementById('announcementTitle');
+    const messageInput = document.getElementById('announcementMessage');
+    const priorityCheck = document.getElementById('announcementPriority');
+    const expiresInput = document.getElementById('announcementExpires');
+    const charCount = document.getElementById('charCount');
+    const resultDiv = document.getElementById('announcementResult');
+
+    if (titleInput) titleInput.value = '';
+    if (messageInput) messageInput.value = '';
+    if (priorityCheck) priorityCheck.checked = false;
+    if (expiresInput) expiresInput.value = '';
+    if (charCount) charCount.textContent = '0';
+    if (resultDiv) resultDiv.innerHTML = '';
+}
+
+
+async function deleteAnnouncement(id) {
+    if (!confirm('Are you sure you want to delete this announcement?')) return;
+
+    try {
+        // First verify admin status
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) throw new Error('Not authenticated');
+
+        const { data: user, error: userError } = await supabase
+            .from('users')
+            .select('is_admin')
+            .eq('email', session.user.email)
+            .single();
+
+        if (userError || !user || !user.is_admin) {
+            throw new Error('Admin privileges required');
+        }
+
+        const { error } = await supabase
+            .from('announcements')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+
+        loadAnnouncements();
+    } catch (err) {
+        console.error('Error deleting announcement:', err);
+        alert('Error deleting announcement: ' + err.message);
+    }
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }

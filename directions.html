@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/UMak_Logo_Registered.png">
     <title>How to Use - University of Makati Library</title>
     
     <!-- Tailwind CSS -->
@@ -113,12 +114,12 @@
     <!-- Sticky Table of Contents (outside main for proper fixed positioning) -->
     <div class="toc-sidebar" id="tocSidebar">
         <div class="toc-sticky">
-            <h3 class="toc-title">📋 Contents</h3>
+            <h3 class="toc-title">Contents</h3>
             <nav class="toc-nav">
                 <ol class="toc-list">
                     <li><a href="#registration" data-section="registration">Step 1: Creating Your Account</a></li>
                     <li><a href="#login" data-section="login">Step 2: Logging In</a></li>
-                    <li><a href="#rfid" data-section="rfid">Step 3: Setting Up Your RFID Card</a></li>
+                    <li><a href="#rfid" data-section="rfid">Step 3: Setting Up Your Access Device</a></li>
                     <li><a href="#dashboard" data-section="dashboard">Step 4: Using Your Dashboard</a></li>
                     <li><a href="#map" data-section="map">Step 5: Viewing Seat Map</a></li>
                     <li><a href="#reports" data-section="reports">Step 6: Submitting Reports</a></li>
@@ -138,7 +139,7 @@
                     📚 Student Portal Guide
                 </h1>
                 <p class="text-lg text-gray-600 font-medium">
-                    Complete instructions for using the RFID Login System
+                    Complete instructions for using the Noise Comfort Index
                 </p>
             </header>
 
@@ -203,37 +204,37 @@
                 </div>
             </div>
 
-            <!-- Step 3: RFID Setup -->
+            <!-- Step 3: Device Setup -->
             <div class="guide-section" id="rfid">
-                <h2>Step 3: Setting Up Your RFID Card</h2>
+                <h2>Step 3: Setting Up Your Access Device</h2>
                 <div class="step">
-                    <h3><span class="step-number">1</span>Access the RFID Reader</h3>
+                    <h3><span class="step-number">1</span>Access the Device Reader</h3>
                     <div class="step-content">
-                        <p>Go to the physical RFID reader at your table/lab location.</p>
+                        <p>Go to the physical device reader at your table/lab location.</p>
                     </div>
                 </div>
                 
                 <div class="step">
-                    <h3><span class="step-number">2</span>Tap Your RFID Card</h3>
+                    <h3><span class="step-number">2</span>Tap Your Access Device</h3>
                     <div class="step-content">
-                        <p>Tap your RFID card on the reader. The LCD screen will display your unique RFID Card ID (it will look something like: <code>93B12CDA</code>).</p>
+                        <p>Tap your access device on the reader. The LCD screen will display your unique Device ID (it will look something like: <code>93B12CDA</code>).</p>
                         <div class="highlight-box">
-                            <strong>📝 Write it down:</strong> The RFID ID will be displayed on the LCD screen. Make sure to copy it exactly as shown (it's case-sensitive!).
+                            <strong>📝 Write it down:</strong> The Device ID will be displayed on the LCD screen. Make sure to copy it exactly as shown (it's case-sensitive!).
                         </div>
                     </div>
                 </div>
                 
                 <div class="step">
-                    <h3><span class="step-number">3</span>Assign Your RFID Card in Dashboard</h3>
+                    <h3><span class="step-number">3</span>Register Your Device in Dashboard</h3>
                     <div class="step-content">
-                        <p>After logging into your Dashboard, you'll see an "Assign Your RFID Card" section. Follow these steps:</p>
+                        <p>After logging into your Dashboard, you'll see a "Register Your Access Device" section. Follow these steps:</p>
                         <ul>
-                            <li>Enter the exact RFID Card ID you copied from the LCD screen</li>
+                            <li>Enter the exact Device ID you copied from the LCD screen</li>
                             <li>Make sure to copy-paste it exactly (it's case-sensitive)</li>
-                            <li>Click "Assign RFID Card"</li>
+                            <li>Click "Register Device"</li>
                         </ul>
                         <div class="warning-box">
-                            <strong>⚠️ Note:</strong> You only need to do this once. After assignment, you can use your RFID card to log in and out at the physical reader.
+                            <strong>⚠️ Note:</strong> You only need to do this once. After registration, you can use your device to check in and monitor noise levels at the physical reader.
                         </div>
                     </div>
                 </div>
@@ -260,9 +261,9 @@
                 <div class="step">
                     <h3><span class="step-number">2</span>Your Status Section</h3>
                     <div class="step-content">
-                        <p>After assigning your RFID card, you'll see:</p>
+                        <p>After registering your device, you'll see:</p>
                         <ul>
-                            <li><strong>Your Status:</strong> Shows whether you're currently logged in via RFID (green) or logged out (red)</li>
+                            <li><strong>Your Status:</strong> Shows whether you're currently in an active session (green) or session ended (red)</li>
                             <li><strong>Your Seat:</strong> Shows which seat you're currently occupying (e.g., "Table 1, Seat 2 - OCCUPIED")</li>
                             <li><strong>Current Noise Level:</strong> Displays the real-time noise level at your table</li>
                         </ul>
@@ -270,12 +271,12 @@
                 </div>
                 
                 <div class="step">
-                    <h3><span class="step-number">3</span>Using RFID at the Physical Reader</h3>
+                    <h3><span class="step-number">3</span>Using Your Device at the Physical Reader</h3>
                     <div class="step-content">
-                        <p>Once your RFID card is assigned:</p>
+                        <p>Once your device is registered:</p>
                         <ul>
-                            <li><strong>To Log In:</strong> Tap your RFID card on the reader when you arrive</li>
-                            <li><strong>To Log Out:</strong> Tap your RFID card again when you leave</li>
+                            <li><strong>To Check In:</strong> Tap your device on the reader when you arrive to start noise monitoring</li>
+                            <li><strong>To Check Out:</strong> Tap your device again when you leave to end the session</li>
                             <li>The system will automatically assign you an available seat</li>
                             <li>Your status on the Dashboard will update in real-time</li>
                         </ul>
@@ -385,13 +386,13 @@
                     </div>
                     
                     <div class="feature-card">
-                        <h4>🔐 RFID Card ID</h4>
-                        <p>Your RFID Card ID is case-sensitive! Make sure to copy it exactly as shown on the LCD screen, or use copy-paste for accuracy.</p>
+                        <h4>🔐 Device ID</h4>
+                        <p>Your Device ID is case-sensitive! Make sure to copy it exactly as shown on the LCD screen, or use copy-paste for accuracy.</p>
                     </div>
                     
                     <div class="feature-card">
                         <h4>🪑 Automatic Seat Assignment</h4>
-                        <p>When you tap your RFID card to log in, the system automatically assigns you the first available seat. You don't need to choose.</p>
+                        <p>When you tap your device to check in, the system automatically assigns you the first available seat and begins monitoring noise levels. You don't need to choose.</p>
                     </div>
                     
                     <div class="feature-card">
@@ -424,7 +425,7 @@
     <!-- Footer with Glassmorphic Effect -->
     <footer class="footer-glass py-6 text-center mt-12">
         <p class="text-sm">
-            University of Makati - RFID Login System<br>
+            University of Makati - Noise Comfort Index<br>
             Student Portal Guide © 2025
         </p>
     </footer>

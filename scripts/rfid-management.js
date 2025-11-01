@@ -190,7 +190,7 @@ async function assignRfid() {
     const userId = document.getElementById('userSelect').value;
     
     if (!rfidUid || !userId) {
-        alert('Please enter RFID UID and select a user');
+        alert('Please enter Device ID and select a user');
         return;
     }
     
@@ -208,7 +208,7 @@ async function assignRfid() {
         }
         
         if (existingRfid && existingRfid.user_id !== userId) {
-            document.getElementById('rfidResult').textContent = '❌ This RFID card is already assigned to another user!';
+            document.getElementById('rfidResult').textContent = '❌ This device is already registered to another user!';
             return;
         }
         
@@ -221,7 +221,7 @@ async function assignRfid() {
             .limit(1);
         
         if (userRfidCards && userRfidCards.length > 0) {
-            // User already has an RFID card - UPDATE it instead of creating new one
+            // User already has an access device - UPDATE it instead of creating new one
             const existingCard = userRfidCards[0];
             
             const { data, error } = await supabase
@@ -235,9 +235,9 @@ async function assignRfid() {
             
             if (error) throw error;
             
-            document.getElementById('rfidResult').textContent = '✅ RFID card updated for this user!';
+            document.getElementById('rfidResult').textContent = '✅ Device updated for this user!';
         } else {
-            // User doesn't have an RFID card - create new one
+            // User doesn't have an access device - create new one
             const { data, error } = await supabase
                 .from('rfid_cards')
                 .insert({ 
@@ -249,7 +249,7 @@ async function assignRfid() {
             
             if (error) throw error;
             
-            document.getElementById('rfidResult').textContent = '✅ RFID card assigned!';
+            document.getElementById('rfidResult').textContent = '✅ Device registered!';
         }
         
         document.getElementById('rfidUid').value = '';
@@ -273,11 +273,11 @@ async function viewAllRfid() {
         if (error) throw error;
         
         if (!rfidCards || rfidCards.length === 0) {
-            document.getElementById('allRfidData').innerHTML = '<p>No RFID cards found.</p>';
+            document.getElementById('allRfidData').innerHTML = '<p>No devices found.</p>';
             return;
         }
         
-        let html = '<table border="1" style="width:100%;border-collapse:collapse;margin-top:10px;"><thead><tr style="background:#333;color:white;"><th style="padding:10px;">RFID UID</th><th style="padding:10px;">User</th><th style="padding:10px;">Status</th><th style="padding:10px;">Created</th><th style="padding:10px;">Actions</th></tr></thead><tbody>';
+        let html = '<table border="1" style="width:100%;border-collapse:collapse;margin-top:10px;"><thead><tr style="background:#333;color:white;"><th style="padding:10px;">Device ID</th><th style="padding:10px;">User</th><th style="padding:10px;">Status</th><th style="padding:10px;">Created</th><th style="padding:10px;">Actions</th></tr></thead><tbody>';
         
         rfidCards.forEach(card => {
             const user = card.user;
@@ -299,12 +299,12 @@ async function viewAllRfid() {
         document.getElementById('allRfidData').innerHTML = html;
     } catch (err) {
         console.error('Error loading RFID cards:', err);
-        document.getElementById('allRfidData').innerHTML = '<p>Error loading RFID cards: ' + err.message + '</p>';
+        document.getElementById('allRfidData').innerHTML = '<p>Error loading devices: ' + err.message + '</p>';
     }
 }
 
 async function toggleRfidStatus(rfidId, activate) {
-    if (!confirm('Are you sure you want to ' + (activate ? 'activate' : 'deactivate') + ' this RFID card?')) {
+    if (!confirm('Are you sure you want to ' + (activate ? 'activate' : 'deactivate') + ' this device?')) {
         return;
     }
     
@@ -319,7 +319,7 @@ async function toggleRfidStatus(rfidId, activate) {
         // Show success notification
         const notification = document.createElement('div');
         notification.style.cssText = 'position:fixed;top:20px;right:20px;background:#28a745;color:white;padding:15px 20px;border-radius:5px;z-index:9999;box-shadow:0 4px 6px rgba(0,0,0,0.1);';
-        notification.textContent = '✅ RFID card ' + (activate ? 'activated' : 'deactivated') + ' successfully!';
+        notification.textContent = '✅ Device ' + (activate ? 'activated' : 'deactivated') + ' successfully!';
         document.body.appendChild(notification);
         
         setTimeout(() => {

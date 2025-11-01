@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/UMak_Logo_Registered.png">
     <title>User Management - Admin Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,18 +13,34 @@
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
     <style>
+      [data-page="user-management"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="user-management"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="user-management"] .text-indigo-600{color:#0e163e !important}
+      [data-page="user-management"] .hover\:text-indigo-700:hover{color:#121c54 !important}
+      [data-page="user-management"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="user-management"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="user-management"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="user-management"] .header-trigger-icon{color:#0e163e !important}
+      [data-page="user-management"] .bg-gradient-to-br{background:linear-gradient(135deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="user-management"] .bg-gradient-to-r{background:linear-gradient(90deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="user-management"] .from-indigo-600{background-color:#0e163e !important}
+      [data-page="user-management"] .to-pink-400{background-color:#121c54 !important}
+      [data-page="user-management"] .from-pink-500{background-color:#0e163e !important}
+      [data-page="user-management"] .to-pink-600{background-color:#121c54 !important}
+      [data-page="user-management"] .from-pink-600{background-color:#0e163e !important}
+      [data-page="user-management"] .to-pink-800{background-color:#121c54 !important}
       .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      .card-lift:hover { box-shadow: 0 22px 64px rgba(14,22,62,0.17), 0 2px 18px 2px rgba(14,22,62,0.19)!important; transform: scale(1.02); z-index:10; }
       @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
       [data-page="user-management"] .nav-label {
         left: 250px;
         right: auto;
         top: 25px;
         z-index: 99999;
-        /* keep other styles (padding, font, bg, etc.) as is */
       }
     </style>
 </head>
-<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="user-management">
+<body class="text-slate-900 min-h-screen flex flex-col relative setup-body-bg" data-page="user-management">
     <!-- Visual Effects -->
     <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
     <div id="library-background" class="library-background" aria-hidden="true"></div>
@@ -62,22 +79,13 @@
     </div>
     <main class="flex-1 w-full py-16 px-4 md:px-8">
         <div id="fade-content" class="w-full max-w-3xl mx-auto fade-content space-y-12">
-            <div class="flex flex-col items-center py-5">
-                <div class="flex items-center gap-5 mb-3">
-                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
-                        <i data-lucide="users" class="w-8 h-8 text-indigo-800"></i>
-                    </span>
-                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">User Management</h1>
-                </div>
-                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
+            <div class="flex flex-col items-center py-8 mb-8">
+                <h1 class="text-3xl font-bold setup-title-color mb-2">User Management</h1>
             </div>
             <!-- Add User Card -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-indigo-200 p-10 mb-12">
-                <div class="flex items-center gap-4 mb-7">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-indigo-100 shadow">
-                        <i data-lucide="user-plus" class="w-6 h-6 text-indigo-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-indigo-800">Add New User</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl mb-12">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">Add New User</h2>
                 </div>
                 <form class="space-y-5" onsubmit="event.preventDefault(); addUser();">
                     <div>
@@ -123,27 +131,24 @@
                             Make Admin
                         </label>
                     </div>
-                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-semibold shadow-lg transition">Add User & Send Confirmation Email</button>
+                    <button type="submit" class="setup-btn w-full py-3 rounded-xl font-semibold shadow-lg transition">Add User & Send Confirmation Email</button>
                 </form>
                 <p id="userResult" class="mt-4 text-center"></p>
             </section>
             <!-- All Users Card -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
-                <div class="flex items-center gap-4 mb-7">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
-                        <i data-lucide="users" class="w-6 h-6 text-pink-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">All Users</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">All Users</h2>
                 </div>
                 <div class="flex justify-end mb-4">
-                    <button onclick="viewAllUsers()" class="px-6 py-2.5 rounded-xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh</button>
+                    <button onclick="viewAllUsers()" class="setup-btn px-6 py-2.5 rounded-xl font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh</button>
                 </div>
                 <div id="allUsersData"></div>
             </section>
         </div>
     </main>
     <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
-        <p class="mb-1">University of Makati - RFID Login System • User Management</p>
+        <p class="mb-1">University of Makati - Noise Comfort Index • User Management</p>
         <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
     <script src="https://unpkg.com/lucide@latest"></script>

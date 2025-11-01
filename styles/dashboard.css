@@ -91,3 +91,99 @@
     color: white !important;
 }
 
+/* Scrollable Today's Activity Container */
+.activity-timeline-scrollable {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    margin-right: -8px;
+}
+
+/* Custom Scrollbar Styling for Activity Timeline */
+.activity-timeline-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.activity-timeline-scrollable::-webkit-scrollbar-track {
+    background: rgba(14, 22, 62, 0.05);
+    border-radius: 10px;
+}
+
+.activity-timeline-scrollable::-webkit-scrollbar-thumb {
+    background: rgba(14, 22, 62, 0.2);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.activity-timeline-scrollable::-webkit-scrollbar-thumb:hover {
+    background: rgba(14, 22, 62, 0.35);
+}
+
+/* Firefox Scrollbar */
+.activity-timeline-scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(14, 22, 62, 0.2) rgba(14, 22, 62, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .activity-timeline-scrollable {
+        max-height: 300px;
+    }
+}
+
+@media (max-height: 800px) {
+    .activity-timeline-scrollable {
+        max-height: 250px;
+    }
+}
+
+/* Scrollable Announcements Container */
+.announcements-scrollable {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    margin-right: -8px;
+}
+
+/* Custom Scrollbar Styling for Announcements */
+.announcements-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.announcements-scrollable::-webkit-scrollbar-track {
+    background: rgba(14, 22, 62, 0.05);
+    border-radius: 10px;
+}
+
+.announcements-scrollable::-webkit-scrollbar-thumb {
+    background: rgba(14, 22, 62, 0.2);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.announcements-scrollable::-webkit-scrollbar-thumb:hover {
+    background: rgba(14, 22, 62, 0.35);
+}
+
+/* Firefox Scrollbar */
+.announcements-scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(14, 22, 62, 0.2) rgba(14, 22, 62, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .announcements-scrollable {
+        max-height: 300px;
+    }
+}
+
+@media (max-height: 800px) {
+    .announcements-scrollable {
+        max-height: 250px;
+    }
+}
+

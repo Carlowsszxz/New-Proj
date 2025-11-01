@@ -91,9 +91,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (!userEmail) {
         console.log('No user found, redirecting to login...');
         window.location.href = 'login.html';
-        return;
-    }
-    
+                return;
+            }
+            
     // Verify user exists in database and check if admin
     const { data: existingUser } = await supabase
         .from('users')
@@ -107,9 +107,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         await supabase.auth.signOut();
         sessionStorage.removeItem('userEmail');
         window.location.href = 'login.html';
-                return;
-            }
-            
+            return;
+        }
+        
     // If admin, redirect to admin dashboard
     if (existingUser.is_admin === true) {
         window.location.href = 'setup.html';
@@ -172,7 +172,7 @@ async function loadUserInfo(email) {
         document.getElementById('userName').textContent = displayName;
         document.getElementById('welcomeSub').textContent = 'Student Portal';
         
-        // Get user's RFID card
+        // Get user's access device
         const { data: rfidCards, error: rfidError } = await supabase
             .from('rfid_cards')
             .select('*')
@@ -211,9 +211,9 @@ async function loadUserInfo(email) {
                 }
                 
                 if (lastEvent && lastEvent.event === 'login') {
-                    // Show logged in status with RFID
+                    // Show logged in status with device
                     setSessionPill(true);
-                    document.getElementById('statusText').innerHTML = 'RFID Card: ' + rfidUid + ' · <span style="color:green">Logged In</span>';
+                    document.getElementById('statusText').innerHTML = 'Device ID: ' + rfidUid + ' · <span style="color:green">Active Session</span>';
                     
                     // Check occupancy
                     const { data: occupancy, error: occError } = await supabase
@@ -245,20 +245,20 @@ async function loadUserInfo(email) {
                     loadAnnouncementsAndActivity(rfidUid);
                 } else {
                     setSessionPill(false);
-                    document.getElementById('statusText').innerHTML = 'RFID Card: ' + rfidUid + ' · <span style="color:red">Logged Out</span>';
+                    document.getElementById('statusText').innerHTML = 'Device ID: ' + rfidUid + ' · <span style="color:red">Session Ended</span>';
                     document.getElementById('seatInfo').textContent = 'No active seat';
                     setNoiseUI(null);
                     loadAnnouncementsAndActivity(rfidUid);
                 }
             } else {
                 setSessionPill(false);
-                document.getElementById('statusText').innerHTML = 'RFID Card: ' + rfidUid + ' · <span style="color:orange">Never logged in</span>';
+                document.getElementById('statusText').innerHTML = 'Device ID: ' + rfidUid + ' · <span style="color:orange">No active session</span>';
                 document.getElementById('seatInfo').textContent = 'No active seat';
                 setNoiseUI(null);
                 loadAnnouncementsAndActivity(rfidUid);
             }
         } else {
-            // No RFID card - show assignment form
+            // No access device - show registration form
             document.getElementById('rfidAssignment').style.display = 'block';
             document.getElementById('myStatus').style.display = 'none';
             document.getElementById('mySeat').style.display = 'none';
@@ -319,10 +319,10 @@ function setSessionPill(isLoggedIn) {
     const pill = document.getElementById('sessionPill');
     if (!pill) return;
     if (isLoggedIn) {
-        pill.textContent = 'RFID Active';
+        pill.textContent = 'Device Active';
         pill.className = 'text-xs px-3 py-1 rounded-full bg-green-100 text-green-800';
     } else {
-        pill.textContent = 'RFID Inactive';
+        pill.textContent = 'Device Inactive';
         pill.className = 'text-xs px-3 py-1 rounded-full bg-gray-200 text-gray-700';
     }
 }
@@ -360,38 +360,51 @@ function updateStatsApprox(loginAt) {
 }
 
 async function loadAnnouncementsAndActivity(rfidUid) {
-    // Announcements (lcd_messages for table-1)
+    // Announcements from announcements table
     try {
-        const { data: msgs } = await supabase
-            .from('lcd_messages')
+        // Get all announcements (filter out expired client-side)
+        const { data: announcements } = await supabase
+            .from('announcements')
             .select('*')
-            .eq('table_id', 'table-1')
             .order('is_priority', { ascending: false })
-            .order('updated_at', { ascending: false })
-            .limit(3);
+            .order('created_at', { ascending: false })
+            .limit(5);
+        
+        // Filter out expired announcements client-side
+        const activeAnnouncements = announcements ? announcements.filter(ann => {
+            if (!ann.expires_at) return true;
+            return new Date(ann.expires_at) > new Date();
+        }) : [];
         const container = document.getElementById('announcements');
         const annUpdated = document.getElementById('annUpdated');
         if (annUpdated) annUpdated.textContent = 'Updated ' + new Date().toLocaleTimeString();
         if (container) {
-            if (!msgs || msgs.length === 0) {
+            if (!activeAnnouncements || activeAnnouncements.length === 0) {
                 container.innerHTML = '<p class="text-gray-500 text-sm">No announcements</p>';
-            } else {
-                container.innerHTML = msgs.map(m => `
-                    <div class="p-3 rounded-lg border ${m.is_priority ? 'border-rose-300 bg-rose-50' : 'border-slate-200 bg-slate-50'}">
+    } else {
+                container.innerHTML = activeAnnouncements.map(ann => `
+                    <div class="p-3 rounded-lg border ${ann.is_priority ? 'border-rose-300 bg-rose-50' : 'border-slate-200 bg-slate-50'}">
                         <div class="flex items-center justify-between gap-2 text-sm mb-1">
-                            <span class="font-medium ${m.is_priority ? 'text-rose-700' : 'text-slate-700'}">${m.is_priority ? 'Priority' : 'Announcement'}</span>
-                            <span class="text-xs text-gray-500">${m.updated_at ? new Date(m.updated_at).toLocaleTimeString() : ''}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium ${ann.is_priority ? 'text-rose-700' : 'text-slate-700'}">${escapeHtml(ann.title || 'Announcement')}</span>
+                                ${ann.is_priority ? '<span class="px-1.5 py-0.5 text-xs rounded bg-rose-200 text-rose-800 font-medium">Priority</span>' : ''}
+                            </div>
+                            <span class="text-xs text-gray-500">${ann.created_at ? new Date(ann.created_at).toLocaleDateString() : ''}</span>
                         </div>
-                        <div class="text-gray-800 whitespace-pre-wrap text-sm">${escapeHtml(m.message || '')}</div>
+                        <div class="text-gray-800 whitespace-pre-wrap text-sm">${escapeHtml(ann.message || '')}</div>
                     </div>
                 `).join('');
             }
         }
     } catch (e) {
-        // ignore
+        console.error('Error loading announcements:', e);
+        const container = document.getElementById('announcements');
+        if (container) {
+            container.innerHTML = '<p class="text-gray-500 text-sm">Error loading announcements</p>';
+        }
     }
 
-    // Activity (recent login/logout for this RFID)
+    // Activity (recent session activity for this device)
     try {
         if (!rfidUid) {
             const tl = document.getElementById('activityTimeline');
@@ -461,7 +474,7 @@ document.getElementById('assignRfidForm').addEventListener('submit', async funct
     const userEmail = sessionStorage.getItem('userEmail');
     
     if (!rfidInput) {
-        document.getElementById('rfidError').textContent = 'Please enter your RFID card ID';
+        document.getElementById('rfidError').textContent = 'Please enter your Device ID';
         return;
     }
     
@@ -483,11 +496,11 @@ document.getElementById('assignRfidForm').addEventListener('submit', async funct
             .single();
         
         if (!cardError && existingCard) {
-            document.getElementById('rfidError').textContent = 'This RFID card is already assigned to another user';
+            document.getElementById('rfidError').textContent = 'This device is already registered to another user';
             return;
         }
         
-        // Insert new RFID card assignment
+        // Insert new device registration
         const { error: insertError } = await supabase
             .from('rfid_cards')
             .insert({
@@ -498,7 +511,7 @@ document.getElementById('assignRfidForm').addEventListener('submit', async funct
         
         if (insertError) throw insertError;
         
-        alert('RFID card assigned successfully!');
+        alert('Device registered successfully!');
         document.getElementById('rfidInput').value = '';
         loadUserInfo(userEmail);
     } catch (err) {

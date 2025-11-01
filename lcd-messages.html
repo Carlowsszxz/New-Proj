@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/UMak_Logo_Registered.png">
     <title>LCD Messages - Admin Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,12 +14,27 @@
     <link rel="stylesheet" href="styles/setup.css">
     <link rel="stylesheet" href="styles/lcd-messages.css">
     <style>
+      [data-page="lcd-messages"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="lcd-messages"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="lcd-messages"] .text-indigo-600{color:#0e163e !important}
+      [data-page="lcd-messages"] .hover\:text-indigo-700:hover{color:#121c54 !important}
+      [data-page="lcd-messages"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="lcd-messages"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="lcd-messages"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="lcd-messages"] .header-trigger-icon{color:#0e163e !important}
+      [data-page="lcd-messages"] .bg-gradient-to-br{background:linear-gradient(135deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="lcd-messages"] .bg-gradient-to-r{background:linear-gradient(90deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="lcd-messages"] .from-indigo-600{background-color:#0e163e !important}
+      [data-page="lcd-messages"] .to-pink-400{background-color:#121c54 !important}
+      [data-page="lcd-messages"] .from-pink-600{background-color:#0e163e !important}
+      [data-page="lcd-messages"] .to-pink-800{background-color:#121c54 !important}
       .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      .card-lift:hover { box-shadow: 0 22px 64px rgba(14,22,62,0.17), 0 2px 18px 2px rgba(14,22,62,0.19)!important; transform: scale(1.02); z-index:10; }
       @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
       [data-page="lcd-messages"] .nav-label { left: 250px; right: auto; top: 25px; z-index: 99999; }
     </style>
 </head>
-<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="lcd-messages">
+<body class="text-slate-900 min-h-screen flex flex-col relative setup-body-bg" data-page="lcd-messages">
     <!-- Visual Effects -->
     <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
     <div id="library-background" class="library-background" aria-hidden="true"></div>
@@ -60,23 +76,14 @@
 
     <main class="flex-1 w-full py-16 px-4 md:px-8">
         <div id="fade-content" class="w-full max-w-5xl mx-auto fade-content space-y-12">
-            <div class="flex flex-col items-center py-5">
-                <div class="flex items-center gap-5 mb-3">
-                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
-                        <i data-lucide="tv" class="w-8 h-8 text-indigo-800"></i>
-                    </span>
-                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">LCD Message Control</h1>
-                </div>
-                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
+            <div class="flex flex-col items-center py-8 mb-8">
+                <h1 class="text-3xl font-bold setup-title-color mb-2">LCD Message Control</h1>
             </div>
 
             <!-- Send Message Card -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-indigo-200 p-10">
-                <div class="flex items-center gap-4 mb-6">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-indigo-100 shadow">
-                        <i data-lucide="send" class="w-6 h-6 text-indigo-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-indigo-800">Send Message to LCD Screen</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl mb-12">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">Send Message to LCD Screen</h2>
                 </div>
                 <p class="text-slate-600 mb-6">Type a message below to display on the ESP32 LCD screen (20 characters per line, 4 lines).</p>
                 <form id="messageForm" class="message-form">
@@ -101,8 +108,8 @@
                     <div class="checkbox-group"><label><input type="number" id="displayDuration" value="10" min="1" max="300" class="duration-input"> Display Duration (seconds, 1-300)</label></div>
 
                     <div class="button-group flex gap-3 flex-wrap">
-                        <button type="submit" class="btn btn-primary">Send to LCD</button>
-                        <button type="button" onclick="clearMessage()" class="btn btn-secondary">Clear Message</button>
+                        <button type="submit" class="setup-btn btn btn-primary">Send to LCD</button>
+                        <button type="button" onclick="clearMessage()" class="px-5 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold shadow">Clear Message</button>
                     </div>
                 </form>
 
@@ -115,21 +122,18 @@
             </section>
 
             <!-- Recent Messages Card -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
-                <div class="flex items-center gap-4 mb-6">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
-                        <i data-lucide="history" class="w-6 h-6 text-pink-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">Recent Messages</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">Recent Messages</h2>
                 </div>
                 <div id="messageList" class="message-list"><p>Loading messages...</p></div>
-                <div class="mt-4 flex justify-end"><button onclick="loadMessages()" class="refresh-btn">Refresh</button></div>
+                <div class="mt-4 flex justify-end"><button onclick="loadMessages()" class="setup-btn px-4 py-2 rounded-xl font-semibold shadow">Refresh</button></div>
             </section>
         </div>
     </main>
 
     <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
-        <p class="mb-1">University of Makati - RFID Login System • LCD Messages</p>
+        <p class="mb-1">University of Makati - Noise Comfort Index • LCD Messages</p>
         <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
 

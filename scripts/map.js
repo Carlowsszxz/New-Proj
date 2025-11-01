@@ -170,7 +170,7 @@ async function loadMap() {
                 userBanner.innerHTML = `
                     <div class="flex items-center justify-center gap-2">
                         <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
-                        <span class="text-gray-700">Tap your RFID card at the reader to occupy a seat</span>
+                        <span class="text-gray-700">Tap your access device at the reader to occupy a seat and start noise monitoring</span>
                     </div>
                 `;
                 userBanner.className = 'p-4 rounded-lg bg-blue-50 border border-blue-200 mb-6';

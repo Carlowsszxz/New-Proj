@@ -268,3 +268,158 @@ button.success {
 body[data-admin] .modern-sidebar ~ .nav-label {
     right: calc(50% + 250px) !important;
 }
+
+/* Setup Buttons - Sliding Background Effect (matching login.html style) */
+.setup-btn {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #0e163e;
+    border: 2px solid #0e163e;
+    box-shadow: 0 8px 24px rgba(14, 22, 62, 0.15);
+    transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    isolation: isolate;
+}
+
+/* Sliding background effect */
+.setup-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(135deg, #0e163e 0%, #121c54 100%);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+    border-radius: 0.5rem;
+    pointer-events: none;
+}
+
+.setup-btn:hover::before {
+    width: 100%;
+    transform-origin: right center;
+}
+
+.setup-btn:hover {
+    background: transparent !important;
+    color: white !important;
+    border-color: transparent;
+    box-shadow: 0 12px 32px rgba(14, 22, 62, 0.3), 0 0 20px rgba(14, 22, 62, 0.2);
+}
+
+/* Ensure text and icons stay above background */
+.setup-btn > *,
+.setup-btn i,
+.setup-btn svg {
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+.setup-btn:hover > *,
+.setup-btn:hover i,
+.setup-btn:hover svg {
+    color: white !important;
+}
+
+/* Setup Container - Glassmorphic Style (matching login.html) */
+.setup-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.98) !important;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(14, 22, 62, 0.2);
+    box-shadow: 0 8px 32px rgba(14, 22, 62, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+/* Containers with p-0 class need special padding handling */
+.setup-container.p-0 {
+    padding: 0;
+}
+
+.setup-container:not(.p-0) {
+    padding: 2rem;
+}
+
+.setup-container > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Stat boxes inside setup containers */
+.setup-stat-box {
+    background: rgba(255, 255, 255, 0.9) !important;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(14, 22, 62, 0.15);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 16px rgba(14, 22, 62, 0.08);
+    transition: all 0.3s ease;
+}
+
+.setup-stat-box:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(14, 22, 62, 0.25);
+    box-shadow: 0 6px 24px rgba(14, 22, 62, 0.12);
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(20px)) {
+    .setup-container {
+        background: rgba(255, 255, 255, 1) !important;
+    }
+    
+    .setup-stat-box {
+        background: rgba(255, 255, 255, 0.98) !important;
+    }
+}
+
+/* Setup Text Colors - Matching login.html #0e163e colorway */
+.setup-title-color {
+    color: #0e163e !important;
+}
+
+.setup-icon-bg {
+    background: rgba(14, 22, 62, 0.1) !important;
+}
+
+.setup-icon-color {
+    color: #0e163e !important;
+}
+
+.setup-underline {
+    background: linear-gradient(90deg, #0e163e 0%, #121c54 100%) !important;
+}
+
+.setup-stat-value {
+    color: #0e163e !important;
+}
+
+/* Clean heading styles */
+h1.setup-title-color,
+h2.setup-title-color {
+    font-weight: 600 !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* Logo sizing - match login.html */
+[data-page="setup"] .sidebar-brand img {
+    width: 36px !important;
+    height: 36px !important;
+    object-fit: contain;
+}
+
+/* Focus colors for inputs and selects */
+[data-page="setup"] .focus\:border-colorway:focus {
+    border-color: #0e163e !important;
+}
+
+[data-page="setup"] .focus\:ring-colorway-light:focus {
+    box-shadow: 0 0 0 2px rgba(14, 22, 62, 0.2) !important;
+}
+
+/* Body background matching login.html */
+.setup-body-bg {
+    background: linear-gradient(135deg, rgba(14, 22, 62, 0.05) 0%, rgba(18, 28, 84, 0.05) 100%) !important;
+}

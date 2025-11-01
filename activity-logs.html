@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/UMak_Logo_Registered.png">
     <title>Activity Logs - Admin Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,12 +14,31 @@
     <link rel="stylesheet" href="styles/setup.css">
     <link rel="stylesheet" href="styles/activity-logs.css">
     <style>
+      [data-page="activity-logs"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="activity-logs"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="activity-logs"] .text-indigo-600{color:#0e163e !important}
+      [data-page="activity-logs"] .hover\:text-indigo-700:hover{color:#121c54 !important}
+      [data-page="activity-logs"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="activity-logs"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="activity-logs"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="activity-logs"] .header-trigger-icon{color:#0e163e !important}
+      [data-page="activity-logs"] .bg-gradient-to-br{background:linear-gradient(135deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="activity-logs"] .bg-gradient-to-r{background:linear-gradient(90deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="activity-logs"] .from-indigo-600{background-color:#0e163e !important}
+      [data-page="activity-logs"] .to-pink-400{background-color:#121c54 !important}
+      [data-page="activity-logs"] .from-pink-600{background-color:#0e163e !important}
+      [data-page="activity-logs"] .to-pink-800{background-color:#121c54 !important}
+      [data-page="activity-logs"] .bg-emerald-600{background-color:#0e163e !important}
+      [data-page="activity-logs"] .hover\:bg-emerald-700:hover{background-color:#121c54 !important}
+      [data-page="activity-logs"] .focus\:border-emerald-600:focus{border-color:#0e163e !important}
+      [data-page="activity-logs"] .focus\:ring-emerald-100:focus{box-shadow:0 0 0 2px rgba(14,22,62,.2) !important}
       .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      .card-lift:hover { box-shadow: 0 22px 64px rgba(14,22,62,0.17), 0 2px 18px 2px rgba(14,22,62,0.19)!important; transform: scale(1.02); z-index:10; }
       @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
       [data-page="activity-logs"] .nav-label { left: 250px; right: auto; top: 25px; z-index: 99999; }
     </style>
 </head>
-<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="activity-logs">
+<body class="text-slate-900 min-h-screen flex flex-col relative setup-body-bg" data-page="activity-logs">
     <!-- Visual Effects -->
     <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
     <div id="library-background" class="library-background" aria-hidden="true"></div>
@@ -60,24 +80,15 @@
 
     <main class="flex-1 w-full py-16 px-4 md:px-8">
         <div id="fade-content" class="w-full max-w-5xl mx-auto fade-content space-y-12">
-            <div class="flex flex-col items-center py-5">
-                <div class="flex items-center gap-5 mb-3">
-                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
-                        <i data-lucide="list" class="w-8 h-8 text-indigo-800"></i>
-                    </span>
-                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">Activity Logs</h1>
-                </div>
-                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
+            <div class="flex flex-col items-center py-8 mb-8">
+                <h1 class="text-3xl font-bold setup-title-color mb-2">Activity Logs</h1>
             </div>
 
             <!-- Advanced Search -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-emerald-200 p-10">
-                <div class="flex items-center gap-4 mb-6">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-emerald-100 shadow">
-                        <i data-lucide="search" class="w-6 h-6 text-emerald-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-emerald-800">Advanced Search</h2>
-                    <button id="searchToggle" onclick="toggleSearch()" class="ml-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Toggle</button>
+            <section class="card-fadein card-lift setup-container rounded-2xl mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color">Advanced Search</h2>
+                    <button id="searchToggle" onclick="toggleSearch()" class="setup-btn px-4 py-2 rounded-xl font-semibold shadow">Toggle</button>
                 </div>
                 <form id="searchForm" class="grid md:grid-cols-3 gap-4" onsubmit="event.preventDefault(); performSearch();">
                     <div><label for="searchUserName" class="block text-sm font-medium text-slate-700 mb-1">User Name</label><input type="text" id="searchUserName" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., Carlos Alivarvar"></div>
@@ -85,24 +96,21 @@
                     <div><label for="searchSeat" class="block text-sm font-medium text-slate-700 mb-1">Seat Number</label><input type="number" id="searchSeat" min="1" max="8" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., 1, 2, 3..."></div>
                     <div><label for="searchDateFrom" class="block text-sm font-medium text-slate-700 mb-1">From Date/Time</label><input type="datetime-local" id="searchDateFrom" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"></div>
                     <div><label for="searchDateTo" class="block text-sm font-medium text-slate-700 mb-1">To Date/Time</label><input type="datetime-local" id="searchDateTo" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition"></div>
-                    <div><label for="searchRfid" class="block text-sm font-medium text-slate-700 mb-1">RFID UID</label><input type="text" id="searchRfid" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., 93B12CDA"></div>
+                    <div><label for="searchRfid" class="block text-sm font-medium text-slate-700 mb-1">Device ID</label><input type="text" id="searchRfid" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="e.g., 93B12CDA"></div>
                     <div><label for="searchNoiseMin" class="block text-sm font-medium text-slate-700 mb-1">Min Noise (dB)</label><input type="number" id="searchNoiseMin" min="0" max="100" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="0"></div>
                     <div><label for="searchNoiseMax" class="block text-sm font-medium text-slate-700 mb-1">Max Noise (dB)</label><input type="number" id="searchNoiseMax" min="0" max="100" class="w-full p-3 rounded-lg border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="100"></div>
-                    <div class="md:col-span-3 flex gap-3 justify-end mt-2"><button type="submit" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Search</button><button type="button" onclick="clearSearch()" class="px-5 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold shadow">Clear</button></div>
+                    <div class="md:col-span-3 flex gap-3 justify-end mt-2"><button type="submit" class="setup-btn px-5 py-3 rounded-xl font-semibold shadow">Search</button><button type="button" onclick="clearSearch()" class="px-5 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold shadow">Clear</button></div>
                 </form>
             </section>
 
             <!-- Logs -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
-                <div class="flex items-center gap-4 mb-6">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
-                        <i data-lucide="history" class="w-6 h-6 text-pink-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">Login/Logout Events</h2>
-                    <div id="searchInfo" class="ml-auto text-sm text-slate-600 hidden"></div>
+            <section class="card-fadein card-lift setup-container rounded-2xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color">Login/Logout Events</h2>
+                    <div id="searchInfo" class="text-sm text-slate-600 hidden"></div>
                 </div>
                 <div class="flex justify-end mb-4">
-                    <button onclick="viewLogs()" class="px-6 py-2.5 rounded-xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh Events</button>
+                    <button onclick="viewLogs()" class="setup-btn px-6 py-2.5 rounded-xl font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh Events</button>
                 </div>
                 <div id="logData">Loading events...</div>
             </section>
@@ -110,7 +118,7 @@
     </main>
 
     <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
-        <p class="mb-1">University of Makati - RFID Login System • Activity Logs</p>
+        <p class="mb-1">University of Makati - Noise Comfort Index • Activity Logs</p>
         <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
 

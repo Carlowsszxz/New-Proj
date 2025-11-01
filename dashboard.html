@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/UMak_Logo_Registered.png">
     <title>Dashboard - University of Makati</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,22 +126,22 @@
                 <!-- Left Column -->
                 <div class="space-y-6">
                     <div id="rfidAssignment" class="p-6 bg-indigo-50 rounded-xl border border-indigo-100 hidden">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Assign Your RFID Card</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Register Your Access Device</h3>
                         <p class="font-medium text-gray-700 mb-2">Instructions:</p>
                         <ol class="list-decimal list-inside space-y-2 text-gray-600 mb-6">
-                            <li>Tap your RFID card on the reader</li>
-                            <li>Write down the RFID ID that appears (this is case-sensitive)</li>
+                            <li>Tap your access device on the reader</li>
+                            <li>Write down the Device ID that appears (this is case-sensitive)</li>
                             <li>Enter the exact ID below (copy-paste recommended)</li>
-                            <li>Click "Assign RFID Card"</li>
+                            <li>Click "Register Device"</li>
                         </ol>
                         <form id="assignRfidForm" class="space-y-4">
                             <div>
-                                <label for="rfidInput" class="block text-sm font-medium text-gray-700 mb-2">RFID Card ID:</label>
-                                <input type="text" id="rfidInput" placeholder="Enter RFID ID (case-sensitive)" required
+                                <label for="rfidInput" class="block text-sm font-medium text-gray-700 mb-2">Device ID:</label>
+                                <input type="text" id="rfidInput" placeholder="Enter Device ID (case-sensitive)" required
                                     class="w-full p-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition">
                             </div>
                             <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
-                                Assign RFID Card
+                                Register Device
                             </button>
                         </form>
                         <div id="rfidError" class="mt-4 text-red-600"></div>
@@ -207,7 +208,7 @@
                             <h3 class="text-xl font-semibold text-gray-900">Announcements</h3>
                             <span class="text-xs text-gray-600" id="annUpdated">—</span>
                         </div>
-                        <div id="announcements" class="space-y-3 text-gray-800">
+                        <div id="announcements" class="space-y-3 text-gray-800 announcements-scrollable">
                             <p class="text-gray-500 text-sm">No announcements</p>
                         </div>
                     </div>
@@ -217,7 +218,7 @@
                             <h3 class="text-xl font-semibold text-gray-900">Today's Activity</h3>
                             <a href="reports.html" class="text-sm text-indigo-700 hover:text-indigo-800">View all</a>
                         </div>
-                        <div id="activityTimeline" class="space-y-4">
+                        <div id="activityTimeline" class="space-y-4 activity-timeline-scrollable">
                             <p class="text-gray-500 text-sm">Loading activity…</p>
                         </div>
                     </div>
@@ -245,7 +246,7 @@
     </main>
 
     <footer class="footer-glass py-4 text-center text-sm">
-        <p>University of Makati - RFID Login System</p>
+        <p>University of Makati - Noise Comfort Index</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

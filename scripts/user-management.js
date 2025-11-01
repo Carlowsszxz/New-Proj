@@ -217,12 +217,12 @@ async function toggleAdmin(userId, userEmail, makeAdmin) {
 }
 
 async function deleteUser(userId, userEmail) {
-    if (!confirm('Are you sure you want to delete user: ' + userEmail + '?\n\nThis will also delete their RFID cards and related data!')) {
+    if (!confirm('Are you sure you want to delete user: ' + userEmail + '?\n\nThis will also delete their access devices and related data!')) {
         return;
     }
     
     try {
-        // Delete RFID cards first (foreign key constraint)
+        // Delete access devices first (foreign key constraint)
         await supabase
             .from('rfid_cards')
             .delete()

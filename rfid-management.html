@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RFID Card Management - Admin Dashboard</title>
+    <link rel="icon" type="image/png" href="images/UMak_Logo_Registered.png">
+    <title>Device Management - Admin Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +13,26 @@
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
     <style>
+      [data-page="rfid-management"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="rfid-management"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="rfid-management"] .text-indigo-600{color:#0e163e !important}
+      [data-page="rfid-management"] .hover\:text-indigo-700:hover{color:#121c54 !important}
+      [data-page="rfid-management"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="rfid-management"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="rfid-management"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="rfid-management"] .header-trigger-icon{color:#0e163e !important}
+      [data-page="rfid-management"] .bg-gradient-to-br{background:linear-gradient(135deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="rfid-management"] .bg-gradient-to-r{background:linear-gradient(90deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="rfid-management"] .from-indigo-600{background-color:#0e163e !important}
+      [data-page="rfid-management"] .to-pink-400{background-color:#121c54 !important}
+      [data-page="rfid-management"] .from-pink-500{background-color:#0e163e !important}
+      [data-page="rfid-management"] .to-pink-600{background-color:#121c54 !important}
+      [data-page="rfid-management"] .from-pink-600{background-color:#0e163e !important}
+      [data-page="rfid-management"] .to-pink-800{background-color:#121c54 !important}
+      [data-page="rfid-management"] .bg-emerald-600{background-color:#0e163e !important}
+      [data-page="rfid-management"] .hover\:bg-emerald-700:hover{background-color:#121c54 !important}
       .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
+      .card-lift:hover { box-shadow: 0 22px 64px rgba(14,22,62,0.17), 0 2px 18px 2px rgba(14,22,62,0.19)!important; transform: scale(1.02); z-index:10; }
       @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
       [data-page="rfid-management"] .nav-label {
         left: 250px;
@@ -22,7 +42,7 @@
       }
     </style>
 </head>
-<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="rfid-management">
+<body class="text-slate-900 min-h-screen flex flex-col relative setup-body-bg" data-page="rfid-management">
     <!-- Visual Effects -->
     <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
     <div id="library-background" class="library-background" aria-hidden="true"></div>
@@ -64,28 +84,19 @@
 
     <main class="flex-1 w-full py-16 px-4 md:px-8">
         <div id="fade-content" class="w-full max-w-3xl mx-auto fade-content space-y-12">
-            <div class="flex flex-col items-center py-5">
-                <div class="flex items-center gap-5 mb-3">
-                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
-                        <i data-lucide="contact" class="w-8 h-8 text-indigo-800"></i>
-                    </span>
-                    <h1 class="text-4xl font-black tracking-tight text-indigo-900 leading-tight">RFID Card Management</h1>
-                </div>
-                <div class="h-1 w-24 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
+            <div class="flex flex-col items-center py-8 mb-8">
+                <h1 class="text-3xl font-bold setup-title-color mb-2">Access Device Management</h1>
             </div>
 
             <!-- Assign RFID Card -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-indigo-200 p-10">
-                <div class="flex items-center gap-4 mb-7">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-indigo-100 shadow">
-                        <i data-lucide="scan-line" class="w-6 h-6 text-indigo-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-indigo-800">Assign RFID Card</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl mb-12">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">Register Device</h2>
                 </div>
                 <div class="space-y-4">
                     <div>
-                        <label for="rfidUid" class="block mb-1 text-sm font-medium text-slate-700">RFID UID:</label>
-                        <input type="text" id="rfidUid" maxlength="20" placeholder="Enter RFID UID (e.g., 93B12CDA)" class="w-full p-3 rounded-lg border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition">
+                        <label for="rfidUid" class="block mb-1 text-sm font-medium text-slate-700">Device ID:</label>
+                        <input type="text" id="rfidUid" maxlength="20" placeholder="Enter Device ID (e.g., 93B12CDA)" class="w-full p-3 rounded-lg border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition">
                     </div>
                     <div>
                         <label for="userSearch" class="block mb-1 text-sm font-medium text-slate-700">Assign to User:</label>
@@ -96,8 +107,8 @@
                             <input type="hidden" id="userSelect" value="">
                         </div>
                         <div class="flex gap-3">
-                            <button onclick="loadUsers()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-semibold shadow">Refresh Users</button>
-                            <button onclick="assignRfid()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow">Assign RFID Card</button>
+                            <button onclick="loadUsers()" class="setup-btn px-4 py-2 rounded-xl font-semibold shadow">Refresh Users</button>
+                            <button onclick="assignRfid()" class="setup-btn px-4 py-2 rounded-xl font-semibold shadow">Register Device</button>
                         </div>
                         <p id="rfidResult" class="mt-2 text-sm"></p>
                     </div>
@@ -105,15 +116,12 @@
             </section>
 
             <!-- All RFID Cards -->
-            <section class="card-fadein bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 p-10">
-                <div class="flex items-center gap-4 mb-7">
-                    <span class="h-11 w-11 flex items-center justify-center rounded-full bg-pink-100 shadow">
-                        <i data-lucide="id-card" class="w-6 h-6 text-pink-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-800">All RFID Cards</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">All Access Devices</h2>
                 </div>
                 <div class="flex justify-end mb-4">
-                    <button onclick="viewAllRfid()" class="px-6 py-2.5 rounded-xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh List</button>
+                    <button onclick="viewAllRfid()" class="setup-btn px-6 py-2.5 rounded-xl font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-5 h-5 mr-2"></i>Refresh List</button>
                 </div>
                 <div id="allRfidData"></div>
             </section>
@@ -121,7 +129,7 @@
     </main>
 
     <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
-        <p class="mb-1">University of Makati - RFID Login System • RFID Card Management</p>
+        <p class="mb-1">University of Makati - Noise Comfort Index • Device Management</p>
         <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
 

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/UMak_Logo_Registered.png">
     <title>Admin Dashboard - University of Makati</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,12 +13,32 @@
     <link rel="stylesheet" href="styles/login.css">
     <link rel="stylesheet" href="styles/setup.css">
     <style>
+      [data-page="setup"] .bg-indigo-600{background-color:#0e163e !important}
+      [data-page="setup"] .hover\:bg-indigo-700:hover{background-color:#121c54 !important}
+      [data-page="setup"] .text-indigo-600{color:#0e163e !important}
+      [data-page="setup"] .hover\:text-indigo-700:hover{color:#121c54 !important}
+      [data-page="setup"] .focus\:border-indigo-500:focus{border-color:#0e163e !important}
+      [data-page="setup"] .focus\:ring-indigo-200:focus{box-shadow:0 0 0 3px rgba(14,22,62,.2) !important}
+      [data-page="setup"] .sidebar-nav-item.active{background:rgba(14,22,62,.15) !important;border-color:rgba(14,22,62,.4) !important;color:#0e163e !important}
+      [data-page="setup"] .header-trigger-icon{color:#0e163e !important}
+      [data-page="setup"] .bg-gradient-to-br{background:linear-gradient(135deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="setup"] .bg-gradient-to-r{background:linear-gradient(90deg,#0e163e 0%,#121c54 100%) !important}
+      [data-page="setup"] .from-indigo-600{background-color:#0e163e !important}
+      [data-page="setup"] .to-pink-400{background-color:#121c54 !important}
+      [data-page="setup"] .from-green-500{background-color:#0e163e !important}
+      [data-page="setup"] .to-indigo-500{background-color:#121c54 !important}
+      [data-page="setup"] .from-pink-600{background-color:#0e163e !important}
+      [data-page="setup"] .to-indigo-400{background-color:#121c54 !important}
+      [data-page="setup"] .from-pink-500{background-color:#0e163e !important}
+      [data-page="setup"] .to-indigo-800{background-color:#121c54 !important}
+      [data-page="setup"] .from-emerald-400{background-color:#0e163e !important}
+      [data-page="setup"] .from-pink-400{background-color:#0e163e !important}
       .card-fadein { opacity: 0; transform: translateY(20px) scale(.99); animation: fadeinup .8s 0.1s linear both; }
-      .card-lift:hover { box-shadow: 0 22px 64px rgba(206,81,255,0.17), 0 2px 18px 2px rgba(93,102,254,0.19)!important; transform: scale(1.02); z-index:10; }
+      .card-lift:hover { box-shadow: 0 22px 64px rgba(14,22,62,0.17), 0 2px 18px 2px rgba(14,22,62,0.19)!important; transform: scale(1.02); z-index:10; }
       @keyframes fadeinup { to { opacity: 1; transform: translateY(0) scale(1); } }
     </style>
 </head>
-<body class="text-slate-900 min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" data-page="setup">
+<body class="text-slate-900 min-h-screen flex flex-col relative setup-body-bg" data-page="setup">
     <!-- Visual Effects -->
     <div id="cursor-follower" class="cursor-follower" aria-hidden="true"></div>
     <div id="library-background" class="library-background" aria-hidden="true"></div>
@@ -42,7 +63,7 @@
     <div id="navLabel" class="nav-label"></div>
     <nav id="headerNav" class="modern-sidebar header-collapsed">
         <div class="sidebar-brand">
-            <img src="images/umak_logoresgsitered.png" alt="University of Makati Logo" onerror="this.onerror=null;this.src='images/umak_logoresgsitered.jpg';" />
+            <img src="images/UMak_Logo_Registered.png" alt="University of Makati Logo" />
         </div>
         <a href="setup.html" class="sidebar-nav-item active" data-label="Admin Dashboard" aria-label="Admin Dashboard"><i data-lucide="settings" class="sidebar-icon"></i></a>
         <a href="user-management.html" class="sidebar-nav-item" data-label="User Management" aria-label="User Management"><i data-lucide="users" class="sidebar-icon"></i></a>
@@ -62,7 +83,7 @@
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     <div class="mobile-menu-panel" id="mobileMenuPanel">
         <div class="mobile-menu-header">
-            <img src="images/umak_logoresgsitered.png" alt="UMak Logo" onerror="this.onerror=null;this.src='images/umak_logoresgsitered.jpg';" />
+            <img src="images/UMak_Logo_Registered.png" alt="UMak Logo" />
             <div class="mobile-menu-title">Admin Navigation</div>
         </div>
         <a href="setup.html" class="mobile-nav-item active"><i data-lucide="settings" class="mobile-nav-icon"></i><span>Dashboard</span></a>
@@ -77,92 +98,137 @@
     <main class="flex-1 w-full py-16 px-4 md:px-8">
         <div id="fade-content" class="w-full max-w-5xl mx-auto fade-content space-y-14">
             <!-- Dashboard Heading -->
-            <div class="flex flex-col items-center py-6">
-                <div class="flex items-center gap-6 mb-3">
-                    <span class="h-16 w-16 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-300 via-pink-200 to-pink-300 shadow-xl">
-                        <i data-lucide="settings" class="w-9 h-9 text-indigo-800"></i>
-                    </span>
-                    <span>
-                        <h1 class="text-5xl font-black tracking-tight text-indigo-900 leading-tight">Admin Dashboard</h1>
-                        <div class="h-1 w-28 rounded bg-gradient-to-r from-indigo-400 to-pink-400 mt-3"></div>
-                    </span>
-                </div>
-                <p class="text-xl text-slate-600 mt-4 font-medium max-w-xl text-center">Full control over the UMak RFID Login System</p>
+            <div class="flex flex-col items-center py-8 mb-8">
+                <h1 class="text-3xl font-bold setup-title-color mb-2">Admin Dashboard</h1>
+                <p class="text-sm text-gray-600 max-w-xl text-center">Full control over the UMak Noise Comfort Index</p>
             </div>
 
             <!-- Stats Card -->
-            <section class="card-fadein card-lift bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl mb-6 border-2 border-indigo-200 max-w-3xl mx-auto transition-all">
-                <div class="flex items-center gap-5 mb-8 pl-3">
-                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-indigo-100 shadow-md">
-                        <i data-lucide="bar-chart-3" class="w-7 h-7 text-indigo-700"></i>
-                    </span>
-                    <h2 class="text-2xl font-black tracking-wide text-indigo-800">System Statistics</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl mb-6 max-w-3xl mx-auto transition-all">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">System Statistics</h2>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-6">
-                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
-                        <div class="text-4xl font-black bg-gradient-to-r from-indigo-600 to-pink-400 bg-clip-text text-transparent" id="totalUsers">-</div>
+                    <div class="setup-stat-box py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black setup-stat-value" id="totalUsers">-</div>
                         <div class="text-xs text-gray-500 mt-2">Total Users</div>
                     </div>
-                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
-                        <div class="text-4xl font-black bg-gradient-to-r from-green-500 to-indigo-500 bg-clip-text text-transparent" id="totalRfid">-</div>
-                        <div class="text-xs text-gray-500 mt-2">RFID Cards</div>
+                    <div class="setup-stat-box py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black setup-stat-value" id="totalRfid">-</div>
+                        <div class="text-xs text-gray-500 mt-2">Access Devices</div>
                     </div>
-                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
-                        <div class="text-4xl font-black bg-gradient-to-r from-pink-600 to-indigo-400 bg-clip-text text-transparent" id="occupiedSeats">-</div>
+                    <div class="setup-stat-box py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black setup-stat-value" id="occupiedSeats">-</div>
                         <div class="text-xs text-gray-500 mt-2">Occupied Seats</div>
                     </div>
-                    <div class="bg-white/90 rounded-xl shadow-lg border border-indigo-100 py-8 px-4 text-center group hover:scale-105 transition-all">
-                        <div class="text-4xl font-black bg-gradient-to-r from-pink-500 to-indigo-800 bg-clip-text text-transparent" id="pendingReports">-</div>
+                    <div class="setup-stat-box py-8 px-4 text-center group hover:scale-105 transition-all">
+                        <div class="text-4xl font-black setup-stat-value" id="pendingReports">-</div>
                         <div class="text-xs text-gray-500 mt-2">Pending Reports</div>
                     </div>
                 </div>
-                <div class="flex justify-center"><button class="mt-4 px-7 py-3 rounded-2xl text-base bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-semibold shadow-lg flex items-center transition-all"><i data-lucide='refresh-cw' class='inline w-6 h-6 mr-2'></i>Refresh Stats</button></div>
+                <div class="flex justify-center"><button class="setup-btn mt-4 px-7 py-3 rounded-2xl text-base font-semibold shadow-lg flex items-center transition-all"><i data-lucide='refresh-cw' class='inline w-6 h-6 mr-2'></i>Refresh Stats</button></div>
             </section>
 
             <!-- Occupancy Card -->
-            <section class="card-fadein card-lift bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-emerald-200 max-w-3xl mx-auto p-0 transition-all">
-                <div class="flex items-center gap-5 mb-7 pl-3 pt-10">
-                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-emerald-100 shadow"><i data-lucide="chairs" class="w-7 h-7 text-emerald-800"></i></span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-emerald-900">Seat Occupancy</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl max-w-3xl mx-auto p-0 transition-all">
+                <div class="pt-6 pb-4 px-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">Seat Occupancy</h2>
                 </div>
-                <div class="h-1 w-16 rounded-full bg-gradient-to-r from-emerald-400 to-indigo-400 ml-3 mb-7"></div>
                 <div class="flex flex-col sm:flex-row gap-5 filter-group px-6 mb-7 pb-3 flex-wrap">
                     <label for="occupancyTableSelect" class="sr-only">Select Table</label>
-                    <select id="occupancyTableSelect" onchange="viewOccupancy()" class="table-select p-3 rounded-lg border border-gray-300 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 outline-none transition">
+                    <select id="occupancyTableSelect" onchange="viewOccupancy()" class="table-select p-3 rounded-lg border border-gray-300 focus:border-colorway focus:ring-2 focus:ring-colorway-light outline-none transition">
                         <option value="table-1">Table 1</option>
                         <option value="table-2" disabled>Table 2 (Future Expansion)</option>
                         <option value="table-3" disabled>Table 3 (Future Expansion)</option>
                         <option value="table-4" disabled>Table 4 (Future Expansion)</option>
                     </select>
-                    <button onclick="viewOccupancy()" class="px-7 py-3 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-400 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-6 h-6 mr-2"></i>Refresh</button>
+                    <button onclick="viewOccupancy()" class="setup-btn px-7 py-3 rounded-2xl font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-6 h-6 mr-2"></i>Refresh</button>
                 </div>
                 <div class="px-8 pb-10" id="occupancyData"></div>
             </section>
 
             <!-- Noise Card -->
-            <section class="card-fadein card-lift bg-white/60 backdrop-blur-2xl shadow-3xl rounded-3xl border-2 border-pink-200 max-w-3xl mx-auto p-0 transition-all">
-                <div class="flex items-center gap-5 mb-7 pl-3 pt-10">
-                    <span class="h-13 w-13 flex items-center justify-center rounded-full bg-pink-100 shadow"><i data-lucide="volume-2" class="w-7 h-7 text-pink-800"></i></span>
-                    <h2 class="text-2xl font-extrabold tracking-wide text-pink-900">Current Noise Level</h2>
+            <section class="card-fadein card-lift setup-container rounded-2xl max-w-3xl mx-auto p-0 transition-all">
+                <div class="pt-6 pb-4 px-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">Current Noise Level</h2>
                 </div>
-                <div class="h-1 w-16 rounded-full bg-gradient-to-r from-pink-400 to-indigo-400 ml-3 mb-7"></div>
                 <div class="flex flex-col sm:flex-row gap-5 filter-group px-6 mb-7 pb-3 flex-wrap">
                     <label for="noiseTableSelect" class="sr-only">Select Table</label>
-                    <select id="noiseTableSelect" onchange="viewNoiseLevel()" class="table-select p-3 rounded-lg border border-gray-300 focus:border-pink-700 focus:ring-2 focus:ring-pink-100 outline-none transition">
+                    <select id="noiseTableSelect" onchange="viewNoiseLevel()" class="table-select p-3 rounded-lg border border-gray-300 focus:border-colorway focus:ring-2 focus:ring-colorway-light outline-none transition">
                         <option value="table-1">Table 1</option>
                         <option value="table-2" disabled>Table 2 (Future Expansion)</option>
                         <option value="table-3" disabled>Table 3 (Future Expansion)</option>
                         <option value="table-4" disabled>Table 4 (Future Expansion)</option>
                     </select>
-                    <button onclick="viewNoiseLevel()" class="px-7 py-3 rounded-2xl bg-gradient-to-br from-pink-500 via-pink-400 to-pink-700 hover:from-pink-600 hover:to-pink-800 text-white font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-6 h-6 mr-2"></i>Refresh</button>
+                    <button onclick="viewNoiseLevel()" class="setup-btn px-7 py-3 rounded-2xl font-semibold shadow flex items-center"><i data-lucide="refresh-cw" class="inline w-6 h-6 mr-2"></i>Refresh</button>
                 </div>
                 <div class="px-8 pb-10" id="noiseData"></div>
+            </section>
+
+            <!-- Announcements Card -->
+            <section class="card-fadein card-lift setup-container rounded-2xl max-w-3xl mx-auto mb-12">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold setup-title-color mb-4">Manage Announcements</h2>
+                    <p class="text-sm text-gray-600">Create and manage announcements that will be visible to all users on their dashboard.</p>
+                </div>
+                
+                <!-- Create New Announcement Form -->
+                <div class="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-semibold setup-title-color mb-4">Create New Announcement</h3>
+                    <form id="announcementForm" class="space-y-4">
+                        <div>
+                            <label for="announcementTitle" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input type="text" id="announcementTitle" required maxlength="100" placeholder="Announcement title" class="w-full p-3 rounded-lg border border-gray-300 focus:border-colorway focus:ring-2 focus:ring-colorway-light outline-none transition">
+                        </div>
+                        <div>
+                            <label for="announcementMessage" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="announcementMessage" required rows="4" maxlength="500" placeholder="Enter announcement message..." class="w-full p-3 rounded-lg border border-gray-300 focus:border-colorway focus:ring-2 focus:ring-colorway-light outline-none transition resize-none"></textarea>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <span id="charCount">0</span> / 500 characters
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="announcementPriority" class="rounded">
+                                <span class="text-sm text-gray-700">Priority (highlighted)</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label for="announcementExpires" class="block text-sm font-medium text-gray-700 mb-1">Expires At (Optional)</label>
+                            <input type="datetime-local" id="announcementExpires" class="w-full p-3 rounded-lg border border-gray-300 focus:border-colorway focus:ring-2 focus:ring-colorway-light outline-none transition">
+                        </div>
+                        <div class="flex gap-3">
+                            <button type="submit" class="setup-btn px-6 py-3 rounded-xl font-semibold shadow flex items-center">
+                                <i data-lucide="send" class="inline w-5 h-5 mr-2"></i>
+                                Post Announcement
+                            </button>
+                            <button type="button" onclick="clearAnnouncementForm()" class="px-6 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold shadow">
+                                Clear
+                            </button>
+                        </div>
+                        <div id="announcementResult" class="text-sm mt-2"></div>
+                    </form>
+                </div>
+
+                <!-- Existing Announcements List -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold setup-title-color">Existing Announcements</h3>
+                        <button onclick="loadAnnouncements()" class="setup-btn px-4 py-2 rounded-lg font-semibold shadow flex items-center text-sm">
+                            <i data-lucide="refresh-cw" class="inline w-4 h-4 mr-2"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="announcementsList" class="space-y-3">
+                        <p class="text-gray-500 text-sm text-center py-4">Loading announcements...</p>
+                    </div>
+                </div>
             </section>
         </div>
     </main>
 
     <footer class="footer-glass py-8 px-4 mt-12 text-center text-base md:text-sm shadow-lg border-t border-white/40 bg-white/60 backdrop-blur-md">
-        <p class="mb-1">University of Makati - RFID Login System • Admin Dashboard</p>
+        <p class="mb-1">University of Makati - Noise Comfort Index • Admin Dashboard</p>
         <p class="text-gray-500 text-xs">For admin authorized use only. &copy; 2025 UMak</p>
     </footer>
     <script src="https://unpkg.com/lucide@latest"></script>
